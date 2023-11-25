@@ -2,7 +2,7 @@ import { DashboardLayout } from "@/components/layout/dashboard-layout";
 
 const AnalyticsPage = () => {
   return (
-    <DashboardLayout title="Analytics" pageDescription="">
+    <DashboardLayout title="Teacher - Analytics" pageDescription="">
       <div>Analytics Page</div>
     </DashboardLayout>
   );
