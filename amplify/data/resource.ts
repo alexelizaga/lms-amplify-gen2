@@ -10,6 +10,7 @@ const schema = a.schema({
     .authorization([a.allow.owner()]),
   Course: a
     .model({
+      id: a.id().required(),
       userId: a.id().required(),
       title: a.string().required(),
       description: a.string(),
@@ -18,6 +19,7 @@ const schema = a.schema({
       isPublished: a.boolean().default(false),
       category: a.belongsTo("Category"),
     })
+    .identifier(["id", "userId"])
     .authorization([a.allow.owner(), a.allow.private().to(["read"])]),
   Category: a
     .model({
