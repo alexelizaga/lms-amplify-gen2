@@ -18,14 +18,14 @@ const schema = a.schema({
       isPublished: a.boolean().default(false),
       category: a.belongsTo("Category"),
     })
-    .authorization([a.allow.owner()]),
+    .authorization([a.allow.owner(), a.allow.private().to(["read"])]),
   Category: a
     .model({
       icon: a.string(),
       name: a.string().required(),
       courses: a.hasMany("Course"),
     })
-    .authorization([a.allow.owner()]),
+    .authorization([a.allow.owner(), a.allow.private().to(["read"])]),
 });
 
 export type Schema = ClientSchema<typeof schema>;
