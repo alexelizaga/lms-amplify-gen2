@@ -75,7 +75,7 @@ const createCourse = async (req: NextApiRequest, res: NextApiResponse) => {
       operation: async (contextSpec) => {
         const { data: newCourse } =
           await reqResBasedClient.models.Course.create(contextSpec, {
-            id: uuid(),
+            courseId: uuid(),
             title,
             userId,
           });
