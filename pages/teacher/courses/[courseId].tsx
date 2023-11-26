@@ -10,7 +10,7 @@ import { getCurrentUser } from "aws-amplify/auth/server";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { IconBadge } from "@/components/icon-badge";
 import { CircleDollarSign, LayoutDashboard, ListChecks } from "lucide-react";
-import { TitleForm } from "@/pages/teacher/courses/_components/title-form";
+import { TitleForm } from "@/components/dashboard/teacher/course/title-form";
 
 type Props = {
   course: any;
