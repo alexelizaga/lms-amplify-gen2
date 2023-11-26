@@ -1,9 +1,11 @@
+import type { NextApiRequest, NextApiResponse } from "next";
+import { getCurrentUser } from "aws-amplify/auth/server";
+import { v4 as uuid } from "uuid";
+
 import {
   reqResBasedClient,
   runWithAmplifyServerContext,
 } from "@/utils/amplifyServerUtils";
-import { getCurrentUser } from "aws-amplify/auth/server";
-import type { NextApiRequest, NextApiResponse } from "next";
 
 export default async function handler(
   req: NextApiRequest,
@@ -73,6 +75,7 @@ const createCourse = async (req: NextApiRequest, res: NextApiResponse) => {
       operation: async (contextSpec) => {
         const { data: newCourse } =
           await reqResBasedClient.models.Course.create(contextSpec, {
+            courseId: uuid(),
             title,
             userId,
           });
