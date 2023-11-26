@@ -1,18 +1,17 @@
 import React from "react";
-
 import { GetServerSideProps, NextPage } from "next";
 import {
   reqResBasedClient,
   runWithAmplifyServerContext,
 } from "@/utils/amplifyServerUtils";
 import { getCurrentUser } from "aws-amplify/auth/server";
+import { CircleDollarSign, LayoutDashboard, ListChecks } from "lucide-react";
 
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { IconBadge } from "@/components/icon-badge";
-import { CircleDollarSign, LayoutDashboard, ListChecks } from "lucide-react";
-
 import { TitleForm } from "@/components/dashboard/teacher/course/title-form";
 import { DescriptionForm } from "@/components/dashboard/teacher/course/description-form";
+import { PriceForm } from "@/components/dashboard/teacher/course/price-form";
 
 type Props = {
   course: any;
@@ -71,7 +70,7 @@ const CourseIdPage: NextPage<Props> = ({ course }) => {
                 <IconBadge icon={CircleDollarSign} />
                 <h2 className="text-xl">Sell your course</h2>
               </div>
-              {/* <PriceForm initialData={course} onSubmit={onSubmit} /> */}
+              <PriceForm initialData={course} />
             </div>
           </div>
         </div>
