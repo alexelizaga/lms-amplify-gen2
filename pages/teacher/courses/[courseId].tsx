@@ -10,7 +10,9 @@ import { getCurrentUser } from "aws-amplify/auth/server";
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { IconBadge } from "@/components/icon-badge";
 import { CircleDollarSign, LayoutDashboard, ListChecks } from "lucide-react";
+
 import { TitleForm } from "@/components/dashboard/teacher/course/title-form";
+import { DescriptionForm } from "@/components/dashboard/teacher/course/description-form";
 
 type Props = {
   course: any;
@@ -48,7 +50,7 @@ const CourseIdPage: NextPage<Props> = ({ course }) => {
               <h2 className="text-xl">Customize your course</h2>
             </div>
             <TitleForm initialData={course} />
-            {/* <DescriptionForm initialData={course} onSubmit={onSubmit} /> */}
+            <DescriptionForm initialData={course} />
             {/* <ImageForm initialData={course} onSubmit={onSubmit} /> */}
             {/* <CategoryForm
               initialData={course}
