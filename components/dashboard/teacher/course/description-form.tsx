@@ -3,25 +3,26 @@ import { useRouter } from "next/router";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import axios from "axios";
-import { Button, Flex, Input } from "@aws-amplify/ui-react";
-import toast from "react-hot-toast";
 import { Pencil } from "lucide-react";
+import { Button, Flex, TextAreaField } from "@aws-amplify/ui-react";
+import { cn } from "@/utils/cn";
+import axios from "axios";
+import toast from "react-hot-toast";
 
-interface TitleFormProps {
+interface DescriptionFormProps {
   initialData: {
     courseId: string;
-    title: string;
+    description: string;
   };
 }
 
 const formSchema = z.object({
-  title: z.string().min(1, {
-    message: "Title is required",
+  description: z.string().min(1, {
+    message: "Description is required",
   }),
 });
 
-export const TitleForm = ({ initialData }: TitleFormProps) => {
+export const DescriptionForm = ({ initialData }: DescriptionFormProps) => {
   const router = useRouter();
   const [isEditing, setIsEditing] = React.useState(false);
 
@@ -29,7 +30,9 @@ export const TitleForm = ({ initialData }: TitleFormProps) => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData,
+    defaultValues: {
+      description: initialData?.description ?? "",
+    },
   });
 
   const { register } = form;
@@ -49,7 +52,7 @@ export const TitleForm = ({ initialData }: TitleFormProps) => {
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Title
+        Description
         <Button onClick={toggleEdit} variation="link" size="small">
           {isEditing ? (
             <>Cancel</>
@@ -61,20 +64,32 @@ export const TitleForm = ({ initialData }: TitleFormProps) => {
           )}
         </Button>
       </div>
-      {!isEditing && <p className="text-sm mt-2">{initialData.title}</p>}
+      {!isEditing && (
+        <p
+          className={cn(
+            "text-sm mt-2",
+            !initialData.description && "text-slate-500 italic"
+          )}
+        >
+          {initialData.description ?? "No description"}
+        </p>
+      )}
       {isEditing && (
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
           <Flex direction="column" gap="small">
-            <Input
+            <TextAreaField
+              label=""
               backgroundColor="white"
-              id="title"
-              hasError={!!errors.title}
+              id="description"
+              hasError={!!errors.description}
               disabled={isSubmitting}
-              placeholder="e.g. 'Advanced web development'"
-              {...register("title")}
+              placeholder="e.g. 'This course is about...'"
+              {...register("description")}
             />
-            {errors.title?.message && (
-              <p className="text-sm text-red-800">{errors.title?.message}</p>
+            {errors.description?.message && (
+              <p className="text-sm text-red-800">
+                {errors.description?.message}
+              </p>
             )}
           </Flex>
           <div className="flex items-center gap-x-2">
