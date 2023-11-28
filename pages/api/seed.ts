@@ -92,12 +92,10 @@ const createCategories = async (req: NextApiRequest, res: NextApiResponse) => {
       await runWithAmplifyServerContext({
         nextServerContext: { request: req, response: res },
         operation: async (contextSpec) => {
-          const { data: newCategory } =
-            await reqResBasedClient.models.Category.create(contextSpec, {
-              name,
-              icon,
-            });
-          return newCategory;
+          await reqResBasedClient.models.Category.create(contextSpec, {
+            name,
+            icon,
+          });
         },
       });
     });
