@@ -15,6 +15,7 @@ const schema = a.schema({
       title: a.string().required(),
       description: a.string(),
       image: a.string(),
+      imageUrl: a.string(),
       price: a.float(),
       isPublished: a.boolean().default(false),
       category: a.belongsTo("Category"),

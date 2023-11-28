@@ -1,24 +1,32 @@
 import React from "react";
-
 import { GetServerSideProps, NextPage } from "next";
 import {
   reqResBasedClient,
   runWithAmplifyServerContext,
 } from "@/utils/amplifyServerUtils";
 import { getCurrentUser } from "aws-amplify/auth/server";
+import { CircleDollarSign, LayoutDashboard, ListChecks } from "lucide-react";
 
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
 import { IconBadge } from "@/components/icon-badge";
-import { CircleDollarSign, LayoutDashboard, ListChecks } from "lucide-react";
-
 import { TitleForm } from "@/components/dashboard/teacher/course/title-form";
 import { DescriptionForm } from "@/components/dashboard/teacher/course/description-form";
+import { PriceForm } from "@/components/dashboard/teacher/course/price-form";
+import { CategoryForm } from "@/components/dashboard/teacher/course/category-form";
 
 type Props = {
   course: any;
+  categories: { icon: string; name: string; id: string }[];
 };
 
-const CourseIdPage: NextPage<Props> = ({ course }) => {
+const CourseIdPage: NextPage<Props> = ({ course, categories }) => {
+  const categoryOptions = React.useMemo(() => {
+    return categories?.map((category) => ({
+      label: category.name,
+      id: category.id,
+    }));
+  }, [categories]);
+
   const requiredFields = [
     course.title,
     course.description,
@@ -52,11 +60,7 @@ const CourseIdPage: NextPage<Props> = ({ course }) => {
             <TitleForm initialData={course} />
             <DescriptionForm initialData={course} />
             {/* <ImageForm initialData={course} onSubmit={onSubmit} /> */}
-            {/* <CategoryForm
-              initialData={course}
-              options={categoryOptions}
-              onSubmit={onSubmit}
-            /> */}
+            <CategoryForm initialData={course} options={categoryOptions} />
           </div>
           <div className="space-y-6">
             <div>
@@ -71,7 +75,7 @@ const CourseIdPage: NextPage<Props> = ({ course }) => {
                 <IconBadge icon={CircleDollarSign} />
                 <h2 className="text-xl">Sell your course</h2>
               </div>
-              {/* <PriceForm initialData={course} onSubmit={onSubmit} /> */}
+              <PriceForm initialData={course} />
             </div>
           </div>
         </div>
@@ -126,7 +130,17 @@ export const getServerSideProps: GetServerSideProps = async ({
     };
   }
 
-  return { props: { course } };
+  const categories = await runWithAmplifyServerContext({
+    nextServerContext: { request: req, response: res },
+    operation: async (contextSpec) => {
+      const { data: categories } = await reqResBasedClient.models.Category.list(
+        contextSpec
+      );
+      return JSON.parse(JSON.stringify(categories));
+    },
+  });
+
+  return { props: { course, categories } };
 };
 
 export default CourseIdPage;
