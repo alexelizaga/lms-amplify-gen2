@@ -32,7 +32,7 @@ const CourseIdPage: NextPage<Props> = ({ course, categories }) => {
     course.description,
     course.image,
     course.price,
-    course.categoryId,
+    course.categoryCoursesId,
   ];
 
   const totalFields = requiredFields.length;
