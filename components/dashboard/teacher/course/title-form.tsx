@@ -4,7 +4,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { Button, Flex, Input } from "@aws-amplify/ui-react";
+import { Button, Flex, Input, View, useTheme } from "@aws-amplify/ui-react";
 import toast from "react-hot-toast";
 import { Pencil } from "lucide-react";
 
@@ -21,6 +21,7 @@ const formSchema = z.object({
 });
 
 export const TitleForm = ({ initialData }: TitleFormProps) => {
+  const { tokens } = useTheme();
   const router = useRouter();
   const [isEditing, setIsEditing] = React.useState(false);
 
@@ -46,7 +47,11 @@ export const TitleForm = ({ initialData }: TitleFormProps) => {
   };
 
   return (
-    <div className="mt-6 border bg-slate-100 rounded-md p-4">
+    <View
+      color={tokens.colors.primary[100]}
+      backgroundColor={tokens.colors.neutral[10]}
+      className="mt-6 border rounded-md p-4"
+    >
       <div className="font-medium flex items-center justify-between">
         Title
         <Button onClick={toggleEdit} variation="link" size="small">
@@ -65,7 +70,6 @@ export const TitleForm = ({ initialData }: TitleFormProps) => {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
           <Flex direction="column" gap="small">
             <Input
-              backgroundColor="white"
               id="title"
               hasError={!!errors.title}
               disabled={isSubmitting}
@@ -77,12 +81,17 @@ export const TitleForm = ({ initialData }: TitleFormProps) => {
             )}
           </Flex>
           <div className="flex items-center gap-x-2">
-            <Button disabled={!isValid} isLoading={isSubmitting} type="submit">
+            <Button
+              variation="link"
+              disabled={!isValid}
+              isLoading={isSubmitting}
+              type="submit"
+            >
               Save
             </Button>
           </div>
         </form>
       )}
-    </div>
+    </View>
   );
 };

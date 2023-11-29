@@ -1,4 +1,5 @@
 import { usePathname, useRouter } from "next/navigation";
+import { View, useTheme } from "@aws-amplify/ui-react";
 import { LucideIcon } from "lucide-react";
 
 import { cn } from "@/utils/cn";
@@ -10,6 +11,7 @@ interface SidebarItemProps {
 }
 
 export const SidebarItem = ({ icon: Icon, label, href }: SidebarItemProps) => {
+  const { tokens } = useTheme();
   const pathname = usePathname();
   const router = useRouter();
 
@@ -23,28 +25,31 @@ export const SidebarItem = ({ icon: Icon, label, href }: SidebarItemProps) => {
   };
 
   return (
-    <button
+    <View
+      as="button"
       onClick={onClick}
       type="button"
       className={cn(
-        "flex items-center gap-x-2 text-slate-500 text-sm font-[500] pl-6 transition-all hover:text-slate-600 hover:bg-slate-300/20",
-        isActive &&
-          "text-sky-700 bg-sky-200/20 hover:bg-sky-200/20 hover:text-sky-700"
+        "flex items-center gap-x-2 text-sm font-[500] transition-all hover:bg-slate-300/20"
       )}
+      color={isActive ? tokens.colors.primary[80] : tokens.colors.primary[100]}
+      backgroundColor={
+        isActive ? tokens.colors.primary[10] : tokens.colors.primary[0]
+      }
     >
-      <div className="flex items-center gap-x-2 py-4">
-        <Icon
-          size={22}
-          className={cn("text-slate-500", isActive && "text-sky-700")}
-        />
+      <View className="pl-6 flex items-center gap-x-2 py-4">
+        <Icon size={22} />
         {label}
-      </div>
-      <div
+      </View>
+      <View
         className={cn(
-          "ml-auto opacity-0 border-2 border-sky-700 h-full transition-all rounded-full",
+          "ml-auto opacity-0 border-2 h-full transition-all rounded-full",
           isActive && "md:opacity-100"
         )}
+        borderColor={
+          isActive ? tokens.colors.primary[80] : tokens.colors.primary[100]
+        }
       />
-    </button>
+    </View>
   );
 };

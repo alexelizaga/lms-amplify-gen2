@@ -2,8 +2,6 @@ import { Menu, MenuItem, useAuthenticator } from "@aws-amplify/ui-react";
 import { LogOut } from "lucide-react";
 import { MdAccountCircle } from "react-icons/md";
 
-import { ColorModeButton } from "./color-mode-button";
-
 export const UserButton = () => {
   const { signOut, user } = useAuthenticator((context) => [context.user]);
 
@@ -18,7 +16,6 @@ export const UserButton = () => {
       }
       overflow="hidden"
     >
-      <ColorModeButton />
       {user.signInDetails?.loginId && (
         <div className="w-full py-1.5 px-4">{user.signInDetails?.loginId}</div>
       )}
