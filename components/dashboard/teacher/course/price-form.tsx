@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Pencil } from "lucide-react";
-import { Button, Flex, Input } from "@aws-amplify/ui-react";
+import { Button, Flex, Input, View, useTheme } from "@aws-amplify/ui-react";
 
 import { cn } from "@/utils/cn";
 import { formatPrice } from "@/utils/format";
@@ -21,6 +21,7 @@ const formSchema = z.object({
 });
 
 export const PriceForm = ({ initialData }: PriceFormProps) => {
+  const { tokens } = useTheme();
   const router = useRouter();
   const [isEditing, setIsEditing] = React.useState(false);
 
@@ -48,7 +49,11 @@ export const PriceForm = ({ initialData }: PriceFormProps) => {
   };
 
   return (
-    <div className="mt-6 border bg-slate-100 rounded-md p-4">
+    <View
+      color={tokens.colors.primary[100]}
+      backgroundColor={tokens.colors.neutral[10]}
+      className="mt-6 border rounded-md p-4"
+    >
       <div className="font-medium flex items-center justify-between">
         Price
         <Button onClick={toggleEdit} variation="link" size="small">
@@ -79,7 +84,6 @@ export const PriceForm = ({ initialData }: PriceFormProps) => {
               id="price"
               type="number"
               step={0.01}
-              backgroundColor="white"
               hasError={!!errors.price}
               disabled={isSubmitting}
               placeholder="Set a price for your course"
@@ -90,12 +94,17 @@ export const PriceForm = ({ initialData }: PriceFormProps) => {
             )}
           </Flex>
           <div className="flex items-center gap-x-2">
-            <Button disabled={!isValid} isLoading={isSubmitting} type="submit">
+            <Button
+              variation="link"
+              disabled={!isValid}
+              isLoading={isSubmitting}
+              type="submit"
+            >
               Save
             </Button>
           </div>
         </form>
       )}
-    </div>
+    </View>
   );
 };

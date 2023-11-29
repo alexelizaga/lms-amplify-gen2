@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { View, useTheme } from "@aws-amplify/ui-react";
 
 import { Sidebar } from "../dashboard/sidebar";
 import { Navbar } from "../dashboard/navbar";
@@ -16,8 +17,15 @@ export const DashboardLayout: React.FC<Props> = ({
   pageDescription,
   imageFullUrl,
 }) => {
+  const { tokens } = useTheme();
   return (
-    <div className="h-full">
+    <View
+      as="div"
+      className="h-full"
+      height={"100vh"}
+      color={tokens.colors.primary[100]}
+      backgroundColor={tokens.colors.background.primary}
+    >
       <Head>
         <title>{title}</title>
         <meta name="description" content={pageDescription} />
@@ -35,6 +43,6 @@ export const DashboardLayout: React.FC<Props> = ({
       </nav>
 
       <main className="md:pl-56 pt-[80px] h-full">{children}</main>
-    </div>
+    </View>
   );
 };

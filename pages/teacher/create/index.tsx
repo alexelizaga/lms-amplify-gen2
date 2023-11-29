@@ -58,7 +58,6 @@ const CreatePage = () => {
             onSubmit={form.handleSubmit(onSubmit)}
           >
             <Flex direction="column" gap="small">
-              <Label htmlFor="title">Course title</Label>
               <Input
                 id="title"
                 hasError={!!errors.title}
@@ -72,7 +71,7 @@ const CreatePage = () => {
             </Flex>
             <div className="flex items-center gap-x-2">
               <Link href="/">
-                <Button type="button" variation="link">
+                <Button type="button" variation="primary">
                   Cancel
                 </Button>
               </Link>
@@ -80,6 +79,7 @@ const CreatePage = () => {
                 type="submit"
                 disabled={!isValid}
                 isLoading={isSubmitting}
+                loadingText="Loading..."
               >
                 Continue
               </Button>

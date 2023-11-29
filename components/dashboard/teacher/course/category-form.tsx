@@ -6,7 +6,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Pencil } from "lucide-react";
-import { Button, Flex } from "@aws-amplify/ui-react";
+import { Button, Flex, View, useTheme } from "@aws-amplify/ui-react";
 
 import { cn } from "@/utils/cn";
 import { Combobox } from "@/components/combo-box";
@@ -55,7 +55,7 @@ export const CategoryForm = ({ initialData, options }: CategoryFormProps) => {
   }, [initialData.categoryCoursesId, options]);
 
   return (
-    <div className="mt-6 border bg-slate-100 rounded-md p-4">
+    <View className="mt-6 border rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
         Category
         <Button onClick={toggleEdit} variation="link" size="small">
@@ -98,12 +98,17 @@ export const CategoryForm = ({ initialData, options }: CategoryFormProps) => {
             )}
           </Flex>
           <div className="flex items-center gap-x-2">
-            <Button disabled={!isValid} isLoading={isSubmitting} type="submit">
+            <Button
+              variation="link"
+              disabled={!isValid}
+              isLoading={isSubmitting}
+              type="submit"
+            >
               Save
             </Button>
           </div>
         </form>
       )}
-    </div>
+    </View>
   );
 };
