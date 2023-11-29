@@ -9,7 +9,7 @@ type ThemeStore = {
 };
 
 export const useThemeStore = create<ThemeStore>((set) => ({
-  colorMode: "light",
+  colorMode: "system",
   onLightMode: () => set({ colorMode: "light" }),
   onDarkMode: () => set({ colorMode: "dark" }),
   onSystemMode: () => set({ colorMode: "system" }),
