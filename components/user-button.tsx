@@ -18,10 +18,10 @@ export const UserButton = () => {
       }
       overflow="hidden"
     >
+      <ColorModeButton />
       {user.signInDetails?.loginId && (
         <div className="w-full py-1.5 px-4">{user.signInDetails?.loginId}</div>
       )}
-      <ColorModeButton />
       <MenuItem onClick={signOut}>
         <LogOut className="mr-4" />
         Log out
