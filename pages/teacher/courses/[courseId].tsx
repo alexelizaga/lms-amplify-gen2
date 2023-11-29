@@ -7,16 +7,19 @@ import {
 import { getCurrentUser } from "aws-amplify/auth/server";
 import { CircleDollarSign, LayoutDashboard, ListChecks } from "lucide-react";
 
-import { DashboardLayout } from "@/components/layout/dashboard-layout";
-import { IconBadge } from "@/components/icon-badge";
-import { TitleForm } from "@/components/dashboard/teacher/course/title-form";
-import { DescriptionForm } from "@/components/dashboard/teacher/course/description-form";
-import { PriceForm } from "@/components/dashboard/teacher/course/price-form";
-import { CategoryForm } from "@/components/dashboard/teacher/course/category-form";
+import {
+  IconBadge,
+  DashboardLayout,
+  TitleForm,
+  DescriptionForm,
+  PriceForm,
+  CategoryForm,
+} from "@/components";
+import { CategoryValues, CourseValues } from "@/types";
 
 type Props = {
-  course: any;
-  categories: { icon: string; name: string; id: string }[];
+  course: CourseValues;
+  categories: CategoryValues[];
 };
 
 const CourseIdPage: NextPage<Props> = ({ course, categories }) => {
