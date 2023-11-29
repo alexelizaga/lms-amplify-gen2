@@ -2,8 +2,6 @@ import { Menu, MenuItem, useAuthenticator } from "@aws-amplify/ui-react";
 import { LogOut } from "lucide-react";
 import { MdAccountCircle } from "react-icons/md";
 
-import { ColorModeButton } from "./color-mode-button";
-
 export const UserButton = () => {
   const { signOut, user } = useAuthenticator((context) => [context.user]);
 

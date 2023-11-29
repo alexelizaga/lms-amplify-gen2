@@ -6,7 +6,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Pencil } from "lucide-react";
-import { Button, Flex, View, useTheme } from "@aws-amplify/ui-react";
+import { Button, Flex, View } from "@aws-amplify/ui-react";
 
 import { cn } from "@/utils/cn";
 import { Combobox } from "@/components/combo-box";

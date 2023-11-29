@@ -4,7 +4,7 @@ import * as z from "zod";
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Button, Flex, Input, Label } from "@aws-amplify/ui-react";
+import { Button, Flex, Input } from "@aws-amplify/ui-react";
 import toast from "react-hot-toast";
 
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
