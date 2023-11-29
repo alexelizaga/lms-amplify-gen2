@@ -8,11 +8,10 @@ import { Button, Flex, Input } from "@aws-amplify/ui-react";
 import toast from "react-hot-toast";
 import { Pencil } from "lucide-react";
 
+import { CourseValues } from "@/types";
+
 interface TitleFormProps {
-  initialData: {
-    courseId: string;
-    title: string;
-  };
+  initialData: CourseValues;
 }
 
 const formSchema = z.object({

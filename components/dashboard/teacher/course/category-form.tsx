@@ -1,4 +1,7 @@
 import React from "react";
+import { useRouter } from "next/router";
+import axios from "axios";
+import toast from "react-hot-toast";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -7,15 +10,10 @@ import { Button, Flex } from "@aws-amplify/ui-react";
 
 import { cn } from "@/utils/cn";
 import { Combobox } from "@/components/combo-box";
-import axios from "axios";
-import toast from "react-hot-toast";
-import { useRouter } from "next/router";
+import { CourseValues } from "@/types";
 
 interface CategoryFormProps {
-  initialData: {
-    courseId: string;
-    categoryCoursesId: string;
-  };
+  initialData: CourseValues;
   options?: { label: string; id: string }[];
 }
 

@@ -35,10 +35,6 @@ export const DashboardLayout: React.FC<Props> = ({
       </nav>
 
       <main className="md:pl-56 pt-[80px] h-full">{children}</main>
-
-      <footer>
-        <div>Footer</div>
-      </footer>
     </div>
   );
 };

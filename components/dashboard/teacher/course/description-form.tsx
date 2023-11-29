@@ -1,19 +1,18 @@
 import React from "react";
 import { useRouter } from "next/router";
 import * as z from "zod";
+import axios from "axios";
+import toast from "react-hot-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Pencil } from "lucide-react";
 import { Button, Flex, TextAreaField } from "@aws-amplify/ui-react";
+
 import { cn } from "@/utils/cn";
-import axios from "axios";
-import toast from "react-hot-toast";
+import { CourseValues } from "@/types";
 
 interface DescriptionFormProps {
-  initialData: {
-    courseId: string;
-    description: string;
-  };
+  initialData: CourseValues;
 }
 
 const formSchema = z.object({

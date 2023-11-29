@@ -10,12 +10,10 @@ import { Button, Flex, Input } from "@aws-amplify/ui-react";
 
 import { cn } from "@/utils/cn";
 import { formatPrice } from "@/utils/format";
+import { CourseValues } from "@/types";
 
 interface PriceFormProps {
-  initialData: {
-    courseId: string;
-    price: number;
-  };
+  initialData: CourseValues;
 }
 
 const formSchema = z.object({
