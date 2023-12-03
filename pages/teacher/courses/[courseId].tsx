@@ -16,6 +16,7 @@ import {
   CategoryForm,
 } from "@/components";
 import { CategoryValues, CourseValues } from "@/types";
+import ImageUrlForm from "@/components/dashboard/teacher/course/image-url-form";
 
 type Props = {
   course: CourseValues;
@@ -63,6 +64,7 @@ const CourseIdPage: NextPage<Props> = ({ course, categories }) => {
             <TitleForm initialData={course} />
             <DescriptionForm initialData={course} />
             {/* <ImageForm initialData={course} onSubmit={onSubmit} /> */}
+            <ImageUrlForm initialData={course} />
             <CategoryForm initialData={course} options={categoryOptions} />
           </div>
           <div className="space-y-6">
