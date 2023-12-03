@@ -87,7 +87,7 @@ const ImageUrlForm = ({ initialData }: ImageUrlFormProps) => {
           </div>
         ))}
       {isEditing && (
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
+        <form className="space-y-4 mt-4">
           <Flex direction="column" gap="small">
             <SearchImage onSelectedPhoto={onSubmit} />
           </Flex>
