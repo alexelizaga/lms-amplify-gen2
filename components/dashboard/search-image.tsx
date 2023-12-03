@@ -44,7 +44,7 @@ export const SearchImage = ({ onSelectedPhoto }: SearchImageProps) => {
 
       <div className="grid grid-cols-3">
         {photos?.map((photo) => (
-          <div
+          <button
             key={photo.id}
             className="relative aspect-video overflow-hidden hover:opacity-75 cursor-pointer"
             onClick={() => onSelectedPhoto({ imageUrl: photo.src.landscape })}
@@ -55,7 +55,7 @@ export const SearchImage = ({ onSelectedPhoto }: SearchImageProps) => {
               width={photo.width}
               height={photo.height}
             />
-          </div>
+          </button>
         ))}
       </div>
     </div>
