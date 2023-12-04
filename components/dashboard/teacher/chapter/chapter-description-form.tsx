@@ -5,20 +5,26 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import { Button, Flex, Input, View, useTheme } from "@aws-amplify/ui-react";
 import { Pencil } from "lucide-react";
+import { Button, Flex, View, useTheme } from "@aws-amplify/ui-react";
 
 import { ChapterValues } from "@/types";
+import { cn } from "@/utils";
+import { Editor, Preview } from "@/components";
 
-interface ChapterTitleFormProps {
+interface ChapterDescriptionFormProps {
   initialData: ChapterValues;
 }
 
 const formSchema = z.object({
-  title: z.string().min(1),
+  description: z.string().min(1, {
+    message: "Description is required",
+  }),
 });
 
-export const ChapterTitleForm = ({ initialData }: ChapterTitleFormProps) => {
+export const ChapterDescriptionForm = ({
+  initialData,
+}: ChapterDescriptionFormProps) => {
   const { tokens } = useTheme();
   const router = useRouter();
   const [isEditing, setIsEditing] = React.useState(false);
@@ -27,10 +33,12 @@ export const ChapterTitleForm = ({ initialData }: ChapterTitleFormProps) => {
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
-    defaultValues: initialData,
+    defaultValues: {
+      description: initialData?.description ?? "",
+    },
   });
 
-  const { register } = form;
+  const { setValue, getValues } = form;
   const { isSubmitting, isValid, errors } = form.formState;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
@@ -54,7 +62,7 @@ export const ChapterTitleForm = ({ initialData }: ChapterTitleFormProps) => {
       className="mt-6 border rounded-md p-4"
     >
       <div className="font-medium flex items-center justify-between">
-        Title
+        Description
         <Button onClick={toggleEdit} variation="link" size="small">
           {isEditing ? (
             <>Cancel</>
@@ -66,20 +74,35 @@ export const ChapterTitleForm = ({ initialData }: ChapterTitleFormProps) => {
           )}
         </Button>
       </div>
-      {!isEditing && <p className="text-sm mt-2">{initialData.title}</p>}
+      {!isEditing && (
+        <div
+          className={cn(
+            "text-sm mt-2",
+            !initialData.description && "text-slate-500 italic"
+          )}
+        >
+          {!initialData.description && "No description"}
+          {initialData.description && (
+            <Preview value={initialData.description} />
+          )}
+        </div>
+      )}
       {isEditing && (
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
           <Flex direction="column" gap="small">
-            <Input
-              backgroundColor="white"
-              id="title"
-              hasError={!!errors.title}
-              disabled={isSubmitting}
-              placeholder="e.g. 'Introduction to the course'"
-              {...register("title")}
+            <Editor
+              value={getValues("description")}
+              onChange={(value) => {
+                setValue("description", value, {
+                  shouldValidate: true,
+                  shouldTouch: true,
+                });
+              }}
             />
-            {errors.title?.message && (
-              <p className="text-sm text-red-800">{errors.title?.message}</p>
+            {errors.description?.message && (
+              <p className="text-sm text-red-800">
+                {errors.description?.message}
+              </p>
             )}
           </Flex>
           <div className="flex items-center gap-x-2">

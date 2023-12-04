@@ -3,7 +3,12 @@ import Link from "next/link";
 import { getCurrentUser } from "aws-amplify/auth/server";
 import { ArrowLeft, LayoutDashboard } from "lucide-react";
 
-import { ChapterTitleForm, DashboardLayout, IconBadge } from "@/components";
+import {
+  ChapterDescriptionForm,
+  ChapterTitleForm,
+  DashboardLayout,
+  IconBadge,
+} from "@/components";
 import { ChapterValues } from "@/types";
 import { reqResBasedClient, runWithAmplifyServerContext } from "@/utils";
 
@@ -21,7 +26,7 @@ const ChapterIdPage: NextPage<Props> = ({ chapter }) => {
 
   return (
     <DashboardLayout title={chapter?.title} pageDescription="">
-      <div className="p-6">
+      <div className="px-6">
         <div className="flex items-center justify-between">
           <div className="w-full">
             <Link
@@ -50,7 +55,7 @@ const ChapterIdPage: NextPage<Props> = ({ chapter }) => {
               </div>
             </div>
             <ChapterTitleForm initialData={chapter} />
-            {/* <ChapterDescriptionForm initialData={chapter} onSubmit={onSubmit} /> */}
+            <ChapterDescriptionForm initialData={chapter} />
           </div>
         </div>
       </div>
