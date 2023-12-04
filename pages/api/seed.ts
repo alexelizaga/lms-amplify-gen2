@@ -24,9 +24,11 @@ export default async function handler(
   if (req.method === "GET") {
     restartCourses(req, res);
     restartCategories(req, res);
+    restartChapters(req, res);
 
     return res.status(200).json({
       "Restart courses": "done",
+      "Restart chapters": "done",
       "Restart categories": "done",
     });
   }
@@ -68,7 +70,7 @@ const restartCategories = async (req: NextApiRequest, res: NextApiResponse) => {
 
     createCategories(req, res);
   } catch (error) {
-    console.log("[SEED]", error);
+    console.log("[SEED_CATEGORIES]", error);
     return res.status(500).json({
       message: "Internal Error",
     });
@@ -77,17 +79,6 @@ const restartCategories = async (req: NextApiRequest, res: NextApiResponse) => {
 
 const createCategories = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
-    const { userId } = await runWithAmplifyServerContext({
-      nextServerContext: { request: req, response: res },
-      operation: (contextSpec) => getCurrentUser(contextSpec),
-    });
-
-    if (!userId) {
-      return res.status(401).json({
-        message: "Unauthorized",
-      });
-    }
-
     CATEGORIES.forEach(async ({ name, icon }) => {
       await runWithAmplifyServerContext({
         nextServerContext: { request: req, response: res },
@@ -100,7 +91,7 @@ const createCategories = async (req: NextApiRequest, res: NextApiResponse) => {
       });
     });
   } catch (error) {
-    console.log("[SEED]", error);
+    console.log("[SEED_CATEGORIES]", error);
     return res.status(500).json({
       message: "Internal Error",
     });
@@ -131,7 +122,37 @@ const restartCourses = async (req: NextApiRequest, res: NextApiResponse) => {
       });
     });
   } catch (error) {
-    console.log("[SEED]", error);
+    console.log("[SEED_COURSES]", error);
+    return res.status(500).json({
+      message: "Internal Error",
+    });
+  }
+};
+
+const restartChapters = async (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    const chapters = await runWithAmplifyServerContext({
+      nextServerContext: { request: req, response: res },
+      operation: async (contextSpec) => {
+        const { data: chapters } = await reqResBasedClient.models.Chapter.list(
+          contextSpec
+        );
+        return chapters;
+      },
+    });
+
+    chapters.forEach(async ({ id }) => {
+      await runWithAmplifyServerContext({
+        nextServerContext: { request: req, response: res },
+        operation: async (contextSpec) => {
+          await reqResBasedClient.models.Chapter.delete(contextSpec, {
+            id,
+          });
+        },
+      });
+    });
+  } catch (error) {
+    console.log("[SEED_CHAPTERS]", error);
     return res.status(500).json({
       message: "Internal Error",
     });

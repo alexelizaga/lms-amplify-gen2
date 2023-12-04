@@ -1,10 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { getCurrentUser } from "aws-amplify/auth/server";
 
-import {
-  reqResBasedClient,
-  runWithAmplifyServerContext,
-} from "@/utils/amplifyServerUtils";
+import { reqResBasedClient, runWithAmplifyServerContext } from "@/utils";
 
 export default async function handler(
   req: NextApiRequest,

@@ -19,6 +19,7 @@ const schema = a.schema({
       price: a.float(),
       isPublished: a.boolean().default(false),
       category: a.belongsTo("Category"),
+      chapters: a.hasMany("Chapter"),
     })
     .identifier(["courseId", "userId"])
     .authorization([a.allow.owner(), a.allow.private().to(["read"])]),
@@ -27,6 +28,21 @@ const schema = a.schema({
       icon: a.string(),
       name: a.string().required(),
       courses: a.hasMany("Course"),
+    })
+    .authorization([a.allow.owner(), a.allow.private().to(["read"])]),
+  Chapter: a
+    .model({
+      title: a.string().required(),
+      description: a.string(),
+      video: a.string(),
+      videoUrl: a.customType({
+        url: a.string(),
+        provider: a.string(),
+      }),
+      position: a.integer().required(),
+      isPublished: a.boolean().default(false),
+      isFree: a.boolean().default(false),
+      course: a.belongsTo("Course"),
     })
     .authorization([a.allow.owner(), a.allow.private().to(["read"])]),
 });
