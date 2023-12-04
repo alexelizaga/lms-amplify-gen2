@@ -1,7 +1,7 @@
 import { GetServerSideProps, NextPage } from "next";
 import Link from "next/link";
 import { getCurrentUser } from "aws-amplify/auth/server";
-import { ArrowLeft, LayoutDashboard } from "lucide-react";
+import { ArrowLeft, Eye, LayoutDashboard, Video } from "lucide-react";
 
 import {
   ChapterDescriptionForm,
@@ -53,9 +53,36 @@ const ChapterIdPage: NextPage<Props> = ({ chapter }) => {
                 <IconBadge icon={LayoutDashboard} />
                 <h2 className="text-xl">Customize your chapter</h2>
               </div>
+              <ChapterTitleForm initialData={chapter} />
+              <ChapterDescriptionForm initialData={chapter} />
             </div>
-            <ChapterTitleForm initialData={chapter} />
-            <ChapterDescriptionForm initialData={chapter} />
+            <div>
+              <div className="flex items-center gap-x-2">
+                <IconBadge icon={Eye} />
+                <h2 className="text-xl">Access Settings</h2>
+              </div>
+              {/* <ChapterAccessForm
+                initialData={chapter}
+                courseId={params.courseId}
+                chapterId={params.chapterId}
+              /> */}
+            </div>
+          </div>
+          <div>
+            <div className="flex items-center gap-x-2">
+              <IconBadge icon={Video} />
+              <h2 className="text-xl">Add a video</h2>
+            </div>
+            {/* <ChapterYoutubeForm
+                initialData={chapter}
+                courseId={params.courseId}
+                chapterId={params.chapterId}
+              /> */}
+            {/* <ChapterVideoForm
+                initialData={chapter}
+                courseId={params.courseId}
+                chapterId={params.chapterId}
+              /> */}
           </div>
         </div>
       </div>
