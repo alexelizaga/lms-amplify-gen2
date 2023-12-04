@@ -1,12 +1,9 @@
 import React from "react";
 import { GetServerSideProps, NextPage } from "next";
-import {
-  reqResBasedClient,
-  runWithAmplifyServerContext,
-} from "@/utils/amplifyServerUtils";
 import { getCurrentUser } from "aws-amplify/auth/server";
 import { CircleDollarSign, LayoutDashboard, ListChecks } from "lucide-react";
 
+import { reqResBasedClient, runWithAmplifyServerContext } from "@/utils";
 import {
   IconBadge,
   DashboardLayout,
@@ -14,9 +11,10 @@ import {
   DescriptionForm,
   PriceForm,
   CategoryForm,
+  ChaptersForm,
+  ImageUrlForm,
 } from "@/components";
 import { CategoryValues, CourseValues } from "@/types";
-import ImageUrlForm from "@/components/dashboard/teacher/course/image-url-form";
 
 type Props = {
   course: CourseValues;
@@ -34,7 +32,7 @@ const CourseIdPage: NextPage<Props> = ({ course, categories }) => {
   const requiredFields = [
     course.title,
     course.description,
-    course.image,
+    course.image || course.imageUrl,
     course.price,
     course.categoryCoursesId,
   ];
@@ -73,7 +71,7 @@ const CourseIdPage: NextPage<Props> = ({ course, categories }) => {
                 <IconBadge icon={ListChecks} />
                 <h2 className="text-xl">Course chapters</h2>
               </div>
-              {/* <ChaptersForm initialData={course} onSubmit={onSubmitChapter} /> */}
+              <ChaptersForm initialData={course} />
             </div>
             <div>
               <div className="flex items-center gap-x-2">

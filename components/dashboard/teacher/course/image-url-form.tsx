@@ -20,7 +20,7 @@ const formSchema = z.object({
   imageUrl: z.string().min(1),
 });
 
-const ImageUrlForm = ({ initialData }: ImageUrlFormProps) => {
+export const ImageUrlForm = ({ initialData }: ImageUrlFormProps) => {
   const { tokens } = useTheme();
   const router = useRouter();
   const [isEditing, setIsEditing] = React.useState(false);
@@ -106,5 +106,3 @@ const ImageUrlForm = ({ initialData }: ImageUrlFormProps) => {
     </View>
   );
 };
-
-export default ImageUrlForm;

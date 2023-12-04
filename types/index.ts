@@ -15,6 +15,20 @@ export type CourseValues = Pick<
 
 export type CategoryValues = Pick<Schema["Category"], "id" | "icon" | "name">;
 
+export type ChapterValues = Pick<
+  Schema["Chapter"],
+  | "id"
+  | "position"
+  | "title"
+  | "description"
+  | "video"
+  | "videoUrl"
+  | "isPublished"
+  | "isFree"
+  | "courseChaptersCourseId"
+  | "courseChaptersUserId"
+>;
+
 export type PhotoValues = {
   alt: string;
   avg_color: string;
