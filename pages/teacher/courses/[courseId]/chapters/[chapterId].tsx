@@ -4,6 +4,7 @@ import { getCurrentUser } from "aws-amplify/auth/server";
 import { ArrowLeft, Eye, LayoutDashboard, Video } from "lucide-react";
 
 import {
+  ChapterAccessForm,
   ChapterDescriptionForm,
   ChapterTitleForm,
   DashboardLayout,
@@ -61,11 +62,7 @@ const ChapterIdPage: NextPage<Props> = ({ chapter }) => {
                 <IconBadge icon={Eye} />
                 <h2 className="text-xl">Access Settings</h2>
               </div>
-              {/* <ChapterAccessForm
-                initialData={chapter}
-                courseId={params.courseId}
-                chapterId={params.chapterId}
-              /> */}
+              <ChapterAccessForm initialData={chapter} />
             </div>
           </div>
           <div>
