@@ -14,14 +14,15 @@ import {
   ChaptersForm,
   ImageUrlForm,
 } from "@/components";
-import { CategoryValues, CourseValues } from "@/types";
+import { CategoryValues, ChapterValues, CourseValues } from "@/types";
 
 type Props = {
   course: CourseValues;
+  chapters: ChapterValues[];
   categories: CategoryValues[];
 };
 
-const CourseIdPage: NextPage<Props> = ({ course, categories }) => {
+const CourseIdPage: NextPage<Props> = ({ course, categories, chapters }) => {
   const categoryOptions = React.useMemo(() => {
     return categories?.map((category) => ({
       label: category.name,
@@ -35,6 +36,7 @@ const CourseIdPage: NextPage<Props> = ({ course, categories }) => {
     course.image || course.imageUrl,
     course.price,
     course.categoryCoursesId,
+    chapters.some((chapter) => chapter.isPublished),
   ];
 
   const totalFields = requiredFields.length;
@@ -133,6 +135,24 @@ export const getServerSideProps: GetServerSideProps = async ({
     };
   }
 
+  const chapters = await runWithAmplifyServerContext({
+    nextServerContext: { request: req, response: res },
+    operation: async (contextSpec) => {
+      const { data: chapters } = await reqResBasedClient.models.Chapter.list(
+        contextSpec,
+        {
+          filter: {
+            and: [
+              { courseChaptersCourseId: { eq: courseId } },
+              { courseChaptersUserId: { eq: userId } },
+            ],
+          },
+        }
+      );
+      return JSON.parse(JSON.stringify(chapters));
+    },
+  });
+
   const categories = await runWithAmplifyServerContext({
     nextServerContext: { request: req, response: res },
     operation: async (contextSpec) => {
@@ -143,7 +163,7 @@ export const getServerSideProps: GetServerSideProps = async ({
     },
   });
 
-  return { props: { course, categories } };
+  return { props: { course, categories, chapters } };
 };
 
 export default CourseIdPage;
