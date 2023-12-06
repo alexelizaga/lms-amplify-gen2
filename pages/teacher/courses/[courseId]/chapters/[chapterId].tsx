@@ -5,7 +5,9 @@ import { ArrowLeft, Eye, LayoutDashboard, Video } from "lucide-react";
 
 import {
   ChapterAccessForm,
+  ChapterActions,
   ChapterDescriptionForm,
+  ChapterStreamForm,
   ChapterTitleForm,
   DashboardLayout,
   IconBadge,
@@ -20,12 +22,18 @@ type Props = {
 
 const ChapterIdPage: NextPage<Props> = ({ chapter }) => {
   const { tokens } = useTheme();
-  const requiredFields = [chapter?.title, chapter?.description, chapter?.video];
+  const requiredFields = [
+    chapter?.title,
+    chapter?.description,
+    chapter?.video || chapter?.streamUrl,
+  ];
 
   const totalFields = requiredFields.length;
   const completedFields = requiredFields.filter(Boolean).length;
 
   const completionText = `(${completedFields}/${totalFields})`;
+
+  const isComplete = requiredFields.every(Boolean);
 
   return (
     <DashboardLayout title={chapter?.title} pageDescription="">
@@ -46,6 +54,12 @@ const ChapterIdPage: NextPage<Props> = ({ chapter }) => {
                   Complete all fields {completionText}
                 </View>
               </div>
+              <ChapterActions
+                disabled={!isComplete}
+                courseId={chapter.courseChaptersCourseId ?? ""}
+                chapterId={chapter.id}
+                isPublished={chapter.isPublished ?? false}
+              />
             </div>
           </div>
         </div>
@@ -72,11 +86,7 @@ const ChapterIdPage: NextPage<Props> = ({ chapter }) => {
               <IconBadge icon={Video} />
               <h2 className="text-xl">Add a video</h2>
             </div>
-            {/* <ChapterYoutubeForm
-                initialData={chapter}
-                courseId={params.courseId}
-                chapterId={params.chapterId}
-              /> */}
+            <ChapterStreamForm initialData={chapter} />
             {/* <ChapterVideoForm
                 initialData={chapter}
                 courseId={params.courseId}

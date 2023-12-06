@@ -114,7 +114,6 @@ export const ChaptersForm = ({ initialData }: ChaptersFormProps) => {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
           <Flex direction="column" gap="small">
             <Input
-              backgroundColor="white"
               id="title"
               hasError={!!errors.title}
               disabled={isSubmitting}
