@@ -8,3 +8,4 @@ export { IconBadge } from "./icon-badge";
 export { NavbarRoutes } from "./navbar-routes";
 export { Preview } from "./preview";
 export { UserButton } from "./user-button";
+export { VideoPlayer } from "./video-player";

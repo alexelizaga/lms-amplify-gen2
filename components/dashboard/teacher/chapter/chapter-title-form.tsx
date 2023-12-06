@@ -15,7 +15,9 @@ interface ChapterTitleFormProps {
 }
 
 const formSchema = z.object({
-  title: z.string().min(1),
+  title: z.string().min(1, {
+    message: "Title is required",
+  }),
 });
 
 export const ChapterTitleForm = ({ initialData }: ChapterTitleFormProps) => {

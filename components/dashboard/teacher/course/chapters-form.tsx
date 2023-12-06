@@ -4,7 +4,7 @@ import axios from "axios";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Button, Flex, Input } from "@aws-amplify/ui-react";
+import { Button, Flex, Input, View, useTheme } from "@aws-amplify/ui-react";
 import toast from "react-hot-toast";
 import { Loader2, PlusCircle } from "lucide-react";
 
@@ -22,6 +22,7 @@ const formSchema = z.object({
 });
 
 export const ChaptersForm = ({ initialData }: ChaptersFormProps) => {
+  const { tokens } = useTheme();
   const router = useRouter();
   const [isCreating, setIsCreating] = React.useState(false);
   const [isUpdating, setIsUpdating] = React.useState(false);
@@ -86,7 +87,11 @@ export const ChaptersForm = ({ initialData }: ChaptersFormProps) => {
   };
 
   return (
-    <div className="relative mt-6 border bg-slate-100 rounded-md p-4">
+    <View
+      color={tokens.colors.primary[100]}
+      backgroundColor={tokens.colors.neutral[10]}
+      className="mt-6 border rounded-md p-4"
+    >
       {isUpdating && (
         <div className="absolute h-full w-full bg-slate-500/20 top-0 right-0 rounded-md flex items-center justify-center">
           <Loader2 className="animate-spin h-6 w-6 text-sky-700" />
@@ -109,7 +114,6 @@ export const ChaptersForm = ({ initialData }: ChaptersFormProps) => {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
           <Flex direction="column" gap="small">
             <Input
-              backgroundColor="white"
               id="title"
               hasError={!!errors.title}
               disabled={isSubmitting}
@@ -151,6 +155,6 @@ export const ChaptersForm = ({ initialData }: ChaptersFormProps) => {
           Drag and drop to reorder the chapters
         </p>
       )}
-    </div>
+    </View>
   );
 };

@@ -35,10 +35,9 @@ const schema = a.schema({
       title: a.string().required(),
       description: a.string(),
       video: a.string(),
-      videoUrl: a.customType({
-        url: a.string(),
-        provider: a.string(),
-      }),
+      streamUrl: a.string(),
+      streamStartTime: a.string(),
+      streamEndTime: a.string(),
       position: a.integer().required(),
       isPublished: a.boolean().default(false),
       isFree: a.boolean().default(false),
