@@ -12,12 +12,14 @@ import {
 } from "@/components";
 import { ChapterValues } from "@/types";
 import { reqResBasedClient, runWithAmplifyServerContext } from "@/utils";
+import { View, useTheme } from "@aws-amplify/ui-react";
 
 type Props = {
   chapter: ChapterValues;
 };
 
 const ChapterIdPage: NextPage<Props> = ({ chapter }) => {
+  const { tokens } = useTheme();
   const requiredFields = [chapter?.title, chapter?.description, chapter?.video];
 
   const totalFields = requiredFields.length;
@@ -31,7 +33,7 @@ const ChapterIdPage: NextPage<Props> = ({ chapter }) => {
         <div className="flex items-center justify-between">
           <div className="w-full">
             <Link
-              href={`/teacher/courses/course?id=${chapter.courseChaptersCourseId}`}
+              href={`/teacher/courses/${chapter.courseChaptersCourseId}`}
               className="flex items-center text-sm hover:opacity-75 transition mb-6"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -40,9 +42,9 @@ const ChapterIdPage: NextPage<Props> = ({ chapter }) => {
             <div className="flex items-center justify-between w-full">
               <div className="flex flex-col gap-y-2">
                 <h1 className="text-2xl font-medium">Chapter Creation</h1>
-                <span className="text-sm text-slate-700">
+                <View color={tokens.colors.primary[30]} className="text-sm">
                   Complete all fields {completionText}
-                </span>
+                </View>
               </div>
             </div>
           </div>

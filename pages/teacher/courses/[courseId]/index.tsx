@@ -15,6 +15,7 @@ import {
   ImageUrlForm,
 } from "@/components";
 import { CategoryValues, ChapterValues, CourseValues } from "@/types";
+import { View, useTheme } from "@aws-amplify/ui-react";
 
 type Props = {
   course: CourseValues;
@@ -23,6 +24,7 @@ type Props = {
 };
 
 const CourseIdPage: NextPage<Props> = ({ course, categories, chapters }) => {
+  const { tokens } = useTheme();
   const categoryOptions = React.useMemo(() => {
     return categories?.map((category) => ({
       label: category.name,
@@ -50,9 +52,9 @@ const CourseIdPage: NextPage<Props> = ({ course, categories, chapters }) => {
         <div className="flex items-center justify-between">
           <div className="flex flex-col gap-y-2">
             <h1 className="text-2xl font-medium">Course setup</h1>
-            <span className="text-sm text-slate-700">
+            <View color={tokens.colors.primary[30]} className="text-sm">
               Complete all fields {completionText}
-            </span>
+            </View>
           </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">

@@ -22,7 +22,8 @@ export const DashboardLayout: React.FC<Props> = ({
     <View
       as="div"
       className="h-full"
-      height={"100vh"}
+      height={"100%"}
+      minHeight={"100vh"}
       color={tokens.colors.primary[100]}
       backgroundColor={tokens.colors.background.primary}
     >
