@@ -99,6 +99,7 @@ export const PriceForm = ({ initialData }: PriceFormProps) => {
               disabled={!isValid}
               isLoading={isSubmitting}
               type="submit"
+              size="small"
             >
               Save
             </Button>

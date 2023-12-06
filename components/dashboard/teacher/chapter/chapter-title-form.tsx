@@ -73,7 +73,6 @@ export const ChapterTitleForm = ({ initialData }: ChapterTitleFormProps) => {
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
           <Flex direction="column" gap="small">
             <Input
-              backgroundColor="white"
               id="title"
               hasError={!!errors.title}
               disabled={isSubmitting}
@@ -85,7 +84,12 @@ export const ChapterTitleForm = ({ initialData }: ChapterTitleFormProps) => {
             )}
           </Flex>
           <div className="flex items-center gap-x-2">
-            <Button disabled={!isValid} isLoading={isSubmitting} type="submit">
+            <Button
+              size="small"
+              disabled={!isValid}
+              isLoading={isSubmitting}
+              type="submit"
+            >
               Save
             </Button>
           </div>

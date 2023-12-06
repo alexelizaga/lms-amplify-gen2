@@ -147,7 +147,11 @@ export const ChapterStreamForm = ({ initialData }: ChapterYoutubeFormProps) => {
             </div>
           </div>
           <div className="flex items-center gap-x-2">
-            <Button disabled={!isValid || isSubmitting} type="submit">
+            <Button
+              size="small"
+              disabled={!isValid || isSubmitting}
+              type="submit"
+            >
               Save
             </Button>
           </div>

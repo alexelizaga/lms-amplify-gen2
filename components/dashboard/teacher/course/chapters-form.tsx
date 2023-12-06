@@ -90,7 +90,7 @@ export const ChaptersForm = ({ initialData }: ChaptersFormProps) => {
     <View
       color={tokens.colors.primary[100]}
       backgroundColor={tokens.colors.neutral[10]}
-      className="mt-6 border rounded-md p-4"
+      className="relative mt-6 border rounded-md p-4"
     >
       {isUpdating && (
         <div className="absolute h-full w-full bg-slate-500/20 top-0 right-0 rounded-md flex items-center justify-center">

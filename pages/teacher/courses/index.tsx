@@ -6,7 +6,7 @@ import { DashboardLayout } from "@/components/layout/dashboard-layout";
 const CoursesPage = () => {
   return (
     <DashboardLayout title="Teacher - Courses" pageDescription="">
-      <div className="p-6">
+      <div className="px-6">
         <Link href="/teacher/create">
           <Button size="small">New Course</Button>
         </Link>
