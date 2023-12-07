@@ -15,6 +15,7 @@ export const SearchImage = ({ onSelectedPhoto }: SearchImageProps) => {
   const [photos, setPhotos] = React.useState<PhotoValues[]>([]);
 
   const getPhotos = async (query: string) => {
+    if (!query) return;
     const { data } = await axios.get<PhotoValues[]>(
       `/api/pexel?query=${query}`
     );

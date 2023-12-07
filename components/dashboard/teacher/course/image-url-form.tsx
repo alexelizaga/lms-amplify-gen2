@@ -6,8 +6,6 @@ import { ImageIcon, Pencil, PlusCircle } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import Image from "next/image";
 
 import { SearchImage } from "../..";
@@ -26,15 +24,6 @@ export const ImageUrlForm = ({ initialData }: ImageUrlFormProps) => {
   const [isEditing, setIsEditing] = React.useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      imageUrl: initialData?.description ?? "",
-    },
-  });
-
-  const { isSubmitting, isValid } = form.formState;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -91,16 +80,6 @@ export const ImageUrlForm = ({ initialData }: ImageUrlFormProps) => {
           <Flex direction="column" gap="small">
             <SearchImage onSelectedPhoto={onSubmit} />
           </Flex>
-          <div className="flex items-center gap-x-2">
-            <Button
-              variation="link"
-              disabled={!isValid}
-              isLoading={isSubmitting}
-              type="submit"
-            >
-              Save
-            </Button>
-          </div>
         </form>
       )}
     </View>

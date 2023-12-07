@@ -108,6 +108,7 @@ export const DescriptionForm = ({ initialData }: DescriptionFormProps) => {
               disabled={!isValid}
               isLoading={isSubmitting}
               type="submit"
+              size="small"
             >
               Save
             </Button>

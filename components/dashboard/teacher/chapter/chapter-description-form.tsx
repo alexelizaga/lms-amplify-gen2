@@ -106,7 +106,12 @@ export const ChapterDescriptionForm = ({
             )}
           </Flex>
           <div className="flex items-center gap-x-2">
-            <Button disabled={!isValid} isLoading={isSubmitting} type="submit">
+            <Button
+              size="small"
+              disabled={!isValid}
+              isLoading={isSubmitting}
+              type="submit"
+            >
               Save
             </Button>
           </div>

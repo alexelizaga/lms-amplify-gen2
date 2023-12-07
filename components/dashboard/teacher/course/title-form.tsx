@@ -86,6 +86,7 @@ export const TitleForm = ({ initialData }: TitleFormProps) => {
               disabled={!isValid}
               isLoading={isSubmitting}
               type="submit"
+              size="small"
             >
               Save
             </Button>

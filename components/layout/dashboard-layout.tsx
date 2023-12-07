@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { View, useTheme } from "@aws-amplify/ui-react";
+import { ScrollView, useTheme } from "@aws-amplify/ui-react";
 
 import { Sidebar } from "../dashboard/sidebar";
 import { Navbar } from "../dashboard/navbar";
@@ -19,11 +19,10 @@ export const DashboardLayout: React.FC<Props> = ({
 }) => {
   const { tokens } = useTheme();
   return (
-    <View
+    <ScrollView
       as="div"
-      className="h-full"
-      height={"100%"}
-      minHeight={"100vh"}
+      width="100vw"
+      height="100vh"
       color={tokens.colors.primary[100]}
       backgroundColor={tokens.colors.background.primary}
     >
@@ -44,6 +43,6 @@ export const DashboardLayout: React.FC<Props> = ({
       </nav>
 
       <main className="md:pl-56 pt-[80px] h-full">{children}</main>
-    </View>
+    </ScrollView>
   );
 };
