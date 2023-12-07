@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { ScrollView, View, useTheme } from "@aws-amplify/ui-react";
+import { ScrollView, useTheme } from "@aws-amplify/ui-react";
 
 import { Sidebar } from "../dashboard/sidebar";
 import { Navbar } from "../dashboard/navbar";

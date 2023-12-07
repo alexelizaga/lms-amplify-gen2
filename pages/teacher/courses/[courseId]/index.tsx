@@ -48,7 +48,7 @@ const CourseIdPage: NextPage<Props> = ({ course, categories, chapters }) => {
 
   return (
     <DashboardLayout title={course.title} pageDescription="">
-      <div className="px-6">
+      <div className="px-6 pb-16">
         <div className="flex items-center justify-between">
           <div className="flex flex-col gap-y-2">
             <h1 className="text-2xl font-medium">Course setup</h1>
