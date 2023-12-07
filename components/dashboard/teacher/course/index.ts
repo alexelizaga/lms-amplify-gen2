@@ -1,3 +1,4 @@
+export { Actions } from "./actions";
 export { CategoryForm } from "./category-form";
 export { ChaptersForm } from "./chapters-form";
 export { DescriptionForm } from "./description-form";

@@ -14,7 +14,7 @@ import {
 } from "@/components";
 import { ChapterValues } from "@/types";
 import { reqResBasedClient, runWithAmplifyServerContext } from "@/utils";
-import { View, useTheme } from "@aws-amplify/ui-react";
+import { Alert, View, useTheme } from "@aws-amplify/ui-react";
 
 type Props = {
   chapter: ChapterValues;
@@ -38,6 +38,20 @@ const ChapterIdPage: NextPage<Props> = ({ chapter }) => {
   return (
     <DashboardLayout title={chapter?.title} pageDescription="">
       <div className="px-6 pb-16">
+        {!chapter.isPublished ? (
+          <div className="mb-6">
+            <Alert
+              variation="warning"
+              isDismissible={false}
+              hasIcon={true}
+              heading="Alert"
+            >
+              This chapter is unpublished. It will not be visible in the course.
+            </Alert>
+          </div>
+        ) : (
+          <></>
+        )}
         <div className="flex items-center justify-between">
           <div className="w-full">
             <Link
