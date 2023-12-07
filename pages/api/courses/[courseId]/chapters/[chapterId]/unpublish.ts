@@ -30,7 +30,7 @@ const unpublishChapter = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     const { chapterId: id = "" } = req.query;
-    const { courseId: courseId = "" } = req.query;
+    const { courseId = "" } = req.query;
 
     if (typeof id !== "string" || typeof courseId !== "string") {
       return res.status(400).json({

@@ -1,9 +1,10 @@
 import React from "react";
 import ReactPlayer from "react-player";
+import { OnProgressProps } from "react-player/base";
 import screenfull from "screenfull";
 
 import { VideoControls } from "./video-controls";
-import { OnProgressProps } from "react-player/base";
+import { cn } from "@/utils";
 
 interface VideoPlayerProps {
   url: string;
@@ -77,7 +78,7 @@ export const VideoPlayer = ({
   };
 
   return (
-    <div className="react-player rounded-md overflow-hidden">
+    <div className="relative react-player rounded-md overflow-hidden">
       <div className="aspect-video">
         <ReactPlayer
           ref={videoRef}
@@ -94,6 +95,13 @@ export const VideoPlayer = ({
           height={"100%"}
         />
       </div>
+      <div
+        className={cn(
+          "opacity-0 transition ease-in delay-100 duration-1000 bg-black absolute top-0 left-0 right-0 aspect-video",
+          !isPlaying && "opacity-100 ease-out delay-0 duration-0"
+        )}
+        onClick={onPlaying}
+      ></div>
       <VideoControls
         isPlaying={isPlaying}
         onPlaying={onPlaying}

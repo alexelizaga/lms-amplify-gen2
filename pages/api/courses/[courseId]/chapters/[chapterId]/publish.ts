@@ -50,7 +50,7 @@ const publishChapter = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
 
-    if (!chapter || !chapter.title || !chapter.description) {
+    if (!chapter?.title || !chapter.description) {
       return res.status(400).json({
         message: "Missing required fields",
       });
