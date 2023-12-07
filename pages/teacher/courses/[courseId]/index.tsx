@@ -13,9 +13,10 @@ import {
   CategoryForm,
   ChaptersForm,
   ImageUrlForm,
+  Actions,
 } from "@/components";
 import { CategoryValues, ChapterValues, CourseValues } from "@/types";
-import { View, useTheme } from "@aws-amplify/ui-react";
+import { Alert, View, useTheme } from "@aws-amplify/ui-react";
 
 type Props = {
   course: CourseValues;
@@ -46,9 +47,26 @@ const CourseIdPage: NextPage<Props> = ({ course, categories, chapters }) => {
 
   const completionText = `(${completedFields}/${totalFields})`;
 
+  const isComplete = requiredFields.every(Boolean);
+
   return (
     <DashboardLayout title={course.title} pageDescription="">
       <div className="px-6 pb-16">
+        {!course.isPublished ? (
+          <div className="mb-6">
+            <Alert
+              variation="warning"
+              isDismissible={false}
+              hasIcon={true}
+              heading="Alert"
+            >
+              This course is unpublished. It will not be visible to the
+              students.
+            </Alert>
+          </div>
+        ) : (
+          <></>
+        )}
         <div className="flex items-center justify-between">
           <div className="flex flex-col gap-y-2">
             <h1 className="text-2xl font-medium">Course setup</h1>
@@ -56,6 +74,12 @@ const CourseIdPage: NextPage<Props> = ({ course, categories, chapters }) => {
               Complete all fields {completionText}
             </View>
           </div>
+          <Actions
+            disabled={!isComplete}
+            courseId={course.courseId}
+            isPublished={course.isPublished ?? false}
+            hasChapters={!!chapters.length}
+          />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
           <div>
@@ -97,75 +121,82 @@ export const getServerSideProps: GetServerSideProps = async ({
   res,
 }) => {
   const { courseId = "" } = params as { courseId: string };
+  try {
+    const { userId } = await runWithAmplifyServerContext({
+      nextServerContext: { request: req, response: res },
+      operation: (contextSpec) => getCurrentUser(contextSpec),
+    });
 
-  const { userId } = await runWithAmplifyServerContext({
-    nextServerContext: { request: req, response: res },
-    operation: (contextSpec) => getCurrentUser(contextSpec),
-  });
+    if (!userId) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    }
 
-  if (!userId) {
+    const course = await runWithAmplifyServerContext({
+      nextServerContext: { request: req, response: res },
+      operation: async (contextSpec) => {
+        const { data: course } = await reqResBasedClient.models.Course.list(
+          contextSpec,
+          {
+            filter: {
+              and: [{ courseId: { eq: courseId } }, { userId: { eq: userId } }],
+            },
+          }
+        );
+        if (!course.length) return undefined;
+        return JSON.parse(JSON.stringify(course[0]));
+      },
+    });
+
+    if (!course) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    }
+
+    const chapters = await runWithAmplifyServerContext({
+      nextServerContext: { request: req, response: res },
+      operation: async (contextSpec) => {
+        const { data: chapters } = await reqResBasedClient.models.Chapter.list(
+          contextSpec,
+          {
+            filter: {
+              and: [
+                { courseChaptersCourseId: { eq: courseId } },
+                { courseChaptersUserId: { eq: userId } },
+              ],
+            },
+          }
+        );
+        return JSON.parse(JSON.stringify(chapters));
+      },
+    });
+
+    const categories = await runWithAmplifyServerContext({
+      nextServerContext: { request: req, response: res },
+      operation: async (contextSpec) => {
+        const { data: categories } =
+          await reqResBasedClient.models.Category.list(contextSpec);
+        return JSON.parse(JSON.stringify(categories));
+      },
+    });
+
+    return { props: { course, categories, chapters } };
+  } catch (error) {
     return {
       redirect: {
-        destination: "/",
+        destination: "/teacher/courses",
         permanent: false,
       },
     };
   }
-
-  const course = await runWithAmplifyServerContext({
-    nextServerContext: { request: req, response: res },
-    operation: async (contextSpec) => {
-      const { data: course } = await reqResBasedClient.models.Course.list(
-        contextSpec,
-        {
-          filter: {
-            and: [{ courseId: { eq: courseId } }, { userId: { eq: userId } }],
-          },
-        }
-      );
-      if (!course.length) return undefined;
-      return JSON.parse(JSON.stringify(course[0]));
-    },
-  });
-
-  if (!course) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-
-  const chapters = await runWithAmplifyServerContext({
-    nextServerContext: { request: req, response: res },
-    operation: async (contextSpec) => {
-      const { data: chapters } = await reqResBasedClient.models.Chapter.list(
-        contextSpec,
-        {
-          filter: {
-            and: [
-              { courseChaptersCourseId: { eq: courseId } },
-              { courseChaptersUserId: { eq: userId } },
-            ],
-          },
-        }
-      );
-      return JSON.parse(JSON.stringify(chapters));
-    },
-  });
-
-  const categories = await runWithAmplifyServerContext({
-    nextServerContext: { request: req, response: res },
-    operation: async (contextSpec) => {
-      const { data: categories } = await reqResBasedClient.models.Category.list(
-        contextSpec
-      );
-      return JSON.parse(JSON.stringify(categories));
-    },
-  });
-
-  return { props: { course, categories, chapters } };
 };
 
 export default CourseIdPage;

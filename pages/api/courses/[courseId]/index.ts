@@ -11,6 +11,10 @@ export default async function handler(
     return updateCourse(req, res);
   }
 
+  if (req.method === "DELETE") {
+    return deleteCourse(req, res);
+  }
+
   return res.status(400).json({
     message: "Bad request",
   });
@@ -45,6 +49,74 @@ const updateCourse = async (req: NextApiRequest, res: NextApiResponse) => {
     });
 
     return res.status(200).json(updatedCourse);
+  } catch (error) {
+    console.log("[COURSE_ID]", error);
+    return res.status(500).json({
+      message: "Internal Error",
+    });
+  }
+};
+
+const deleteCourse = async (req: NextApiRequest, res: NextApiResponse) => {
+  try {
+    const { userId } = await runWithAmplifyServerContext({
+      nextServerContext: { request: req, response: res },
+      operation: (contextSpec) => getCurrentUser(contextSpec),
+    });
+
+    if (!userId) {
+      return res.status(401).json({
+        message: "Unauthorized",
+      });
+    }
+
+    const { courseId } = req.query;
+
+    if (typeof courseId !== "string") {
+      return res.status(400).json({
+        message: "Bad request",
+      });
+    }
+
+    const chapters = await runWithAmplifyServerContext({
+      nextServerContext: { request: req, response: res },
+      operation: async (contextSpec) => {
+        const { data: chapters } = await reqResBasedClient.models.Chapter.list(
+          contextSpec,
+          {
+            filter: {
+              and: [
+                { courseChaptersCourseId: { eq: courseId } },
+                { courseChaptersUserId: { eq: userId } },
+              ],
+            },
+          }
+        );
+        return JSON.parse(JSON.stringify(chapters));
+      },
+    });
+
+    console.log({ chapters, canDelete: chapters.length });
+
+    if (!!chapters.length) {
+      return res.status(404).json({
+        message: "Course have chapters",
+      });
+    }
+
+    const deletedCourse = await runWithAmplifyServerContext({
+      nextServerContext: { request: req, response: res },
+      operation: async (contextSpec) => {
+        const { data: deleteCourse } =
+          await reqResBasedClient.models.Course.delete(contextSpec, {
+            userId,
+            courseId,
+          });
+        return deleteCourse;
+      },
+    });
+
+    return res.status(200).json(deletedCourse);
   } catch (error) {
     console.log("[COURSE_ID]", error);
     return res.status(500).json({

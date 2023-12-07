@@ -22,7 +22,7 @@ export const Modal = ({ isOpen, onClose, children }: ModalProps) => {
         backgroundColor={tokens.colors.neutral[10]}
         className="relative p-8 z-10"
       >
-        <button className="absolute top-0 right-0 p-4" onClick={onClose}>
+        <button className="absolute top-0 right-0 p-2" onClick={onClose}>
           <IoMdClose className="h-[24px] w-[24px]" />
         </button>
         {children}
