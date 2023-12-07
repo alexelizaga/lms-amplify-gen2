@@ -34,11 +34,11 @@ export const DashboardLayout: React.FC<Props> = ({
         {imageFullUrl && <meta name="og:image" content={imageFullUrl} />}
       </Head>
 
-      <nav className="h-[80px] md:pl-56 fixed inset-y-0 w-full z-50">
+      <nav className="h-[80px] md:pl-56 fixed inset-y-0 w-full z-10">
         <Navbar />
       </nav>
 
-      <nav className="hidden md:flex h-full w-56 flex-col fixed inset-y-0 z-50">
+      <nav className="hidden md:flex h-full w-56 flex-col fixed inset-y-0 z-10">
         <Sidebar />
       </nav>
 

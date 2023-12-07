@@ -30,10 +30,31 @@ const publishChapter = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     const { chapterId: id = "" } = req.query;
+    const { courseId = "" } = req.query;
 
-    if (typeof id !== "string") {
+    if (typeof id !== "string" || typeof courseId !== "string") {
       return res.status(400).json({
         message: "Bad request",
+      });
+    }
+
+    const courses = await runWithAmplifyServerContext({
+      nextServerContext: { request: req, response: res },
+      operation: async (contextSpec) => {
+        const { data: courses } = await reqResBasedClient.models.Course.list(
+          contextSpec
+        );
+        return courses;
+      },
+    });
+
+    const courseOwner = courses.find(
+      (course) => course.userId === userId && course.courseId === courseId
+    );
+
+    if (!courseOwner) {
+      return res.status(401).json({
+        message: "Unauthorized",
       });
     }
 
