@@ -104,48 +104,57 @@ export const getServerSideProps: GetServerSideProps = async ({
   req,
   res,
 }) => {
-  const { chapterId: id = "" } = params as {
+  const { chapterId: id = "", courseId = "" } = params as {
     courseId: string;
     chapterId: string;
   };
 
-  const { userId } = await runWithAmplifyServerContext({
-    nextServerContext: { request: req, response: res },
-    operation: (contextSpec) => getCurrentUser(contextSpec),
-  });
+  try {
+    const { userId } = await runWithAmplifyServerContext({
+      nextServerContext: { request: req, response: res },
+      operation: (contextSpec) => getCurrentUser(contextSpec),
+    });
 
-  if (!userId) {
+    if (!userId) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    }
+
+    const chapter = await runWithAmplifyServerContext({
+      nextServerContext: { request: req, response: res },
+      operation: async (contextSpec) => {
+        const { data: chapter } = await reqResBasedClient.models.Chapter.get(
+          contextSpec,
+          {
+            id,
+          }
+        );
+        return JSON.parse(JSON.stringify(chapter));
+      },
+    });
+
+    if (!chapter) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    }
+
+    return { props: { chapter } };
+  } catch (error) {
     return {
       redirect: {
-        destination: "/",
+        destination: `/teacher/courses/${courseId}`,
         permanent: false,
       },
     };
   }
-
-  const chapter = await runWithAmplifyServerContext({
-    nextServerContext: { request: req, response: res },
-    operation: async (contextSpec) => {
-      const { data: chapter } = await reqResBasedClient.models.Chapter.get(
-        contextSpec,
-        {
-          id,
-        }
-      );
-      return JSON.parse(JSON.stringify(chapter));
-    },
-  });
-
-  if (!chapter) {
-    return {
-      redirect: {
-        destination: "/",
-        permanent: false,
-      },
-    };
-  }
-
-  return { props: { chapter } };
 };
 
 export default ChapterIdPage;
