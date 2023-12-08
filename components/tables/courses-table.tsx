@@ -15,7 +15,7 @@ import { cn } from "@/utils";
 import { Pencil } from "lucide-react";
 
 interface DataTableProps {
-  data: CourseValues[];
+  readonly data: CourseValues[];
 }
 
 export function CoursesTable({ data }: DataTableProps) {
