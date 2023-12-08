@@ -12,6 +12,7 @@ export type CourseValues = Pick<
   | "price"
   | "isPublished"
   | "chapters"
+  | "owner"
 >;
 
 export type CategoryValues = Pick<Schema["Category"], "id" | "icon" | "name">;

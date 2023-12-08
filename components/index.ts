@@ -1,5 +1,6 @@
 export * from "./dashboard";
 export * from "./layout";
+export * from "./tables";
 
 export { ColorModeButton } from "./color-mode-button";
 export { Combobox } from "./combo-box";
