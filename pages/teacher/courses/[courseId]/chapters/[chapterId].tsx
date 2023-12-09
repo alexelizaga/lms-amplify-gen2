@@ -101,11 +101,6 @@ const ChapterIdPage: NextPage<Props> = ({ chapter }) => {
               <h2 className="text-xl">Add a video</h2>
             </div>
             <ChapterStreamForm initialData={chapter} />
-            {/* <ChapterVideoForm
-                initialData={chapter}
-                courseId={params.courseId}
-                chapterId={params.chapterId}
-              /> */}
           </div>
         </div>
       </div>
