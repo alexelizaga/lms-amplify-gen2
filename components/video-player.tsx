@@ -21,7 +21,7 @@ export const VideoPlayer = ({
   start,
   end,
   controls = false,
-  playing = true,
+  playing = false,
   loop = false,
 }: VideoPlayerProps) => {
   const videoRef = React.useRef<ReactPlayer>(null);
