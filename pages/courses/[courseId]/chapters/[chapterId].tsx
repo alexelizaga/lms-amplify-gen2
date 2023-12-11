@@ -109,7 +109,7 @@ export const getServerSideProps: GetServerSideProps = async ({
             filter: {
               and: [
                 { courseChaptersCourseId: { eq: courseId } },
-                { courseChaptersUserId: { eq: userId } },
+                { isPublished: { eq: "true" } },
               ],
             },
           }
