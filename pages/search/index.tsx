@@ -20,7 +20,6 @@ type Props = {
 };
 
 const SearchPage: NextPage<Props> = ({ categories, courses }) => {
-  console.log({ categories, courses });
   return (
     <DashboardLayout title="Search" pageDescription="">
       <div className="px-6 pb-16">
@@ -86,6 +85,7 @@ export const getServerSideProps: GetServerSideProps = async ({
               and: [
                 { categoryCoursesId: { contains: categoryId } },
                 { title: { contains: title } },
+                { isPublished: { eq: "true" } },
               ],
             },
           }

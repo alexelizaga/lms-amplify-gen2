@@ -1,17 +1,35 @@
-import { CourseValues } from "@/types";
-import { reqResBasedClient, runWithAmplifyServerContext } from "@/utils";
-import { getCurrentUser } from "aws-amplify/auth/server";
+import React from "react";
 import { GetServerSideProps, NextPage } from "next";
+import { useRouter } from "next/router";
+import { getCurrentUser } from "aws-amplify/auth/server";
+import { Loader2 } from "lucide-react";
+
+import { DashboardLayout } from "@/components";
+import { ChapterValues, CourseValues } from "@/types";
+import {
+  orderByPosition,
+  reqResBasedClient,
+  runWithAmplifyServerContext,
+} from "@/utils";
 
 type Props = {
   course: CourseValues;
+  chapters: ChapterValues[];
 };
 
-const CourseIdPage: NextPage<Props> = ({ course }) => {
+const CourseIdPage: NextPage<Props> = ({ course, chapters }) => {
+  const router = useRouter();
+
+  React.useEffect(() => {
+    router.push(`/courses/${course.courseId}/chapters/${chapters[0].id}`);
+  }, [chapters, course, router]);
+
   return (
-    <div>
-      <div>{course.courseId}</div>
-    </div>
+    <DashboardLayout title={course.title} pageDescription="">
+      <div className="flex items-center justify-center w-full h-full">
+        <Loader2 className="animate-spin h-6 w-6 text-sky-700" />
+      </div>
+    </DashboardLayout>
   );
 };
 
@@ -61,7 +79,22 @@ export const getServerSideProps: GetServerSideProps = async ({
       };
     }
 
-    return { props: { course } };
+    const chapters = await runWithAmplifyServerContext({
+      nextServerContext: { request: req, response: res },
+      operation: async (contextSpec) => {
+        const { data: chapters } = await reqResBasedClient.models.Chapter.list(
+          contextSpec,
+          {
+            filter: {
+              and: [{ courseChaptersCourseId: { eq: courseId } }],
+            },
+          }
+        );
+        return JSON.parse(JSON.stringify(chapters.sort(orderByPosition)));
+      },
+    });
+
+    return { props: { course, chapters } };
   } catch (error) {
     return {
       redirect: {
