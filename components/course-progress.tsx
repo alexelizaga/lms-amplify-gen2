@@ -1,3 +1,5 @@
+import { Loader } from "@aws-amplify/ui-react";
+
 import { cn } from "@/utils";
 
 interface CourseProgressProps {
@@ -22,8 +24,14 @@ export const CourseProgress = ({
   size,
 }: CourseProgressProps) => {
   return (
-    <div>
-      {/* <Progress className="h-2" value={value} variant={variant} /> */}
+    <div className="w-full px-2 overflow-hidden">
+      <Loader
+        size="large"
+        variation="linear"
+        percentage={value}
+        isDeterminate
+        isPercentageTextHidden
+      />
       <p
         className={cn(
           "font-medium mt-2 text-sky-700",
