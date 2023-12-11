@@ -1,11 +1,15 @@
-import Link from "next/link";
 import { GetServerSideProps, NextPage } from "next";
+import Link from "next/link";
 import { getCurrentUser } from "aws-amplify/auth/server";
 import { Button, Heading } from "@aws-amplify/ui-react";
 import { PlusCircle } from "lucide-react";
 
 import { DashboardLayout } from "@/components/layout/dashboard-layout";
-import { reqResBasedClient, runWithAmplifyServerContext } from "@/utils";
+import {
+  reqResBasedClient,
+  runWithAmplifyServerContext,
+  orderByTitle,
+} from "@/utils";
 import { CourseValues } from "@/types";
 import { CoursesTable } from "@/components";
 
@@ -61,7 +65,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
             },
           }
         );
-        return JSON.parse(JSON.stringify(courses));
+        return JSON.parse(JSON.stringify(courses.sort(orderByTitle)));
       },
     });
 

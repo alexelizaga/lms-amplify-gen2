@@ -1,13 +1,15 @@
+import { GetServerSideProps, NextPage } from "next";
+import { getCurrentUser } from "aws-amplify/auth/server";
+import { Divider } from "@aws-amplify/ui-react";
+
 import { CourseLayout, Preview, VideoPlayer } from "@/components";
 import { ChapterValues, CourseValues } from "@/types";
 import {
+  orderByPosition,
   reqResBasedClient,
   runWithAmplifyServerContext,
   timeDuration,
 } from "@/utils";
-import { Divider } from "@aws-amplify/ui-react";
-import { getCurrentUser } from "aws-amplify/auth/server";
-import { GetServerSideProps, NextPage } from "next";
 
 type Props = {
   course: CourseValues;
@@ -112,7 +114,7 @@ export const getServerSideProps: GetServerSideProps = async ({
             },
           }
         );
-        return JSON.parse(JSON.stringify(chapters));
+        return JSON.parse(JSON.stringify(chapters.sort(orderByPosition)));
       },
     });
 
