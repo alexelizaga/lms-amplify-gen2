@@ -37,7 +37,7 @@ const CourseIdPage: NextPage<Props> = ({ course, categories, chapters }) => {
     course.title,
     course.description,
     course.image || course.imageUrl,
-    course.price,
+    course.price !== null,
     course.categoryCoursesId,
     chapters.some((chapter) => chapter.isPublished),
   ];

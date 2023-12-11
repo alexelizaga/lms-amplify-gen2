@@ -70,7 +70,7 @@ const CreatePage = () => {
               )}
             </Flex>
             <div className="flex items-center gap-x-2">
-              <Link href="/">
+              <Link href="/teacher/courses">
                 <Button type="button" variation="primary">
                   Cancel
                 </Button>
