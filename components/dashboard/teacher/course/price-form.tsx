@@ -74,7 +74,9 @@ export const PriceForm = ({ initialData }: PriceFormProps) => {
             !initialData.price && "text-slate-500 italic"
           )}
         >
-          {initialData.price ? formatPrice(initialData.price) : "No price"}
+          {initialData.price === null
+            ? "No price"
+            : formatPrice(initialData.price ?? 0)}
         </p>
       )}
       {isEditing && (

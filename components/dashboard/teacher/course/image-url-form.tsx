@@ -2,7 +2,7 @@ import React from "react";
 import * as z from "zod";
 import { CourseValues } from "@/types";
 import { Button, Flex, View, useTheme } from "@aws-amplify/ui-react";
-import { ImageIcon, Pencil, PlusCircle } from "lucide-react";
+import { Pencil, PlusCircle } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
@@ -62,9 +62,7 @@ export const ImageUrlForm = ({ initialData }: ImageUrlFormProps) => {
       </div>
       {!isEditing &&
         (!initialData.imageUrl ? (
-          <div className="flex items-center justify-center rounded-md relative aspect-video mt-2">
-            <ImageIcon className="h-10 w-10 text-slate-500" />
-          </div>
+          <p className="text-sm mt-2 text-slate-500 italic">No image</p>
         ) : (
           <div className="relative aspect-video mt-2 overflow-hidden">
             <Image

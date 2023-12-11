@@ -39,11 +39,11 @@ export default async function handler(
 }
 
 const CATEGORIES = [
-  { name: "Computer Science", icon: "laptop" },
-  { name: "Music", icon: "cassette-tape" },
-  { name: "Fitness", icon: "activity" },
-  { name: "Photography", icon: "Photography" },
-  { name: "Filming", icon: "film" },
+  { name: "Computer Science", icon: "FcEngineering" },
+  { name: "Music", icon: "FcMusic" },
+  { name: "Fitness", icon: "FcSportsMode" },
+  { name: "Photography", icon: "FcOldTimeCamera" },
+  { name: "Filming", icon: "FcFilmReel" },
 ];
 
 const restartCategories = async (req: NextApiRequest, res: NextApiResponse) => {
