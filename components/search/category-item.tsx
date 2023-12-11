@@ -1,9 +1,8 @@
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { IconType } from "react-icons";
-import * as Icons from "react-icons/fc";
 import qs from "query-string";
 
 import { cn } from "@/utils";
+import { DynamicFcIcon } from "./";
 
 interface CategoryItemProps {
   label: string;
@@ -20,16 +19,6 @@ export const CategoryItem = ({ label, value, icon }: CategoryItemProps) => {
   const currentTitle = searchParams.get("title");
 
   const isSelected = currentCategoryId === value;
-
-  const DynamicFcIcon = ({ name, size }: { name: string; size: number }) => {
-    const IconComponent: IconType = Icons[name];
-
-    if (!IconComponent) {
-      return <></>;
-    }
-
-    return <IconComponent size={size} />;
-  };
 
   const onClick = () => {
     const url = qs.stringifyUrl(
