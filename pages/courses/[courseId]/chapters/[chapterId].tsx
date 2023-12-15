@@ -26,7 +26,7 @@ const ChapterIdPage: NextPage<Props> = ({ course, chapters, chapter }) => {
       progressCount={0}
       chapters={chapters}
     >
-      <div className="p-4 flex flex-col gap-16 max-w-4xl mx-auto pb-20">
+      <div className="p-4 flex flex-col gap-16 max-w-4xl mx-auto">
         {chapter.streamUrl && (
           <div className="border shadow-2xl shadow-black rounded-md overflow-hidden drop-shadow-sm">
             <VideoPlayer
