@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { ScrollView, useTheme } from "@aws-amplify/ui-react";
+import { ScrollView, View, useTheme } from "@aws-amplify/ui-react";
 
 import { CourseNavbar, CourseSidebar } from "@/components";
 import { ChapterValues, CourseValues } from "@/types";
@@ -40,13 +40,17 @@ export const CourseLayout: React.FC<Props> = ({
         {imageFullUrl && <meta name="og:image" content={imageFullUrl} />}
       </Head>
 
-      <nav className="h-[80px] md:pl-56 fixed inset-y-0 w-full z-10">
+      <View
+        as="nav"
+        backgroundColor={tokens.colors.background.primary}
+        className="h-[80px] md:pl-56 fixed inset-y-0 w-full z-10"
+      >
         <CourseNavbar
           course={course}
           progressCount={progressCount}
           chapters={chapters}
         />
-      </nav>
+      </View>
 
       <nav className="hidden md:flex h-full w-56 flex-col fixed inset-y-0 z-10">
         <CourseSidebar
