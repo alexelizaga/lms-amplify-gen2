@@ -30,7 +30,7 @@ export const SidebarItem = ({ icon: Icon, label, href }: SidebarItemProps) => {
       onClick={onClick}
       type="button"
       className={cn(
-        "flex items-center gap-x-2 text-sm font-[500] transition-all hover:bg-slate-300/20"
+        "flex items-center gap-x-2 text-sm font-[500] transition-all hover:bg-slate-300/10"
       )}
       color={isActive ? tokens.colors.primary[80] : tokens.colors.primary[100]}
       backgroundColor={
