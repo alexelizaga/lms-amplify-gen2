@@ -14,9 +14,9 @@ export const CourseSidebar = ({
 }: CourseSidebarProps) => {
   return (
     <div className="h-full flex flex-col overflow-y-auto">
-      <div className="px-6 py-8 flex flex-col">
+      <div className="p-4 md:py-8 md:px-6 flex flex-col">
         <h1 className="font-semibold">{course.title}</h1>
-        <div className="mt-10">
+        <div className="mt-4 md:mt-6">
           <CourseProgress variant="success" value={progressCount} />
         </div>
       </div>
