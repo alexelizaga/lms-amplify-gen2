@@ -16,7 +16,7 @@ export const CoursesList = ({ items }: CoursesListProps) => {
             title={item.title}
             imageUrl={item.imageUrl || ""}
             chaptersLength={item.numberOfChapters}
-            price={item.price || 0}
+            price={item.price ?? 0}
             progress={item.userProgress}
             category={"Music"}
           />

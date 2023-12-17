@@ -1,8 +1,9 @@
 import React from "react";
-import ReactPlayer from "react-player/lazy";
+import ReactPlayer from "react-player";
 import { OnProgressProps } from "react-player/base";
 import screenfull from "screenfull";
 import { Lock } from "lucide-react";
+import qs from "query-string";
 
 import { cn } from "@/utils";
 
@@ -38,8 +39,13 @@ export const VideoPlayer = ({
   const [played, setPlayed] = React.useState(start);
 
   const videoUrl = React.useMemo(() => {
-    if (url.includes("youtube")) return `${url}&t=${start}s`;
-    if (url.includes("vimeo")) return `${url}#t=${start}s`;
+    const saveUrl = qs.parseUrl(url);
+    if (url.includes("youtube")) {
+      return `${saveUrl.url}?v=${saveUrl.query.v}&t=${start}s`;
+    }
+    if (url.includes("vimeo")) {
+      return `${saveUrl.url}#t=${start}s`;
+    }
   }, [start, url]);
 
   const onPlaying = () => {

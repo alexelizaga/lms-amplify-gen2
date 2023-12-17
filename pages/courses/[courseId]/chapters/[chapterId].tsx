@@ -1,5 +1,8 @@
 import { GetServerSideProps, NextPage } from "next";
+import { useRouter } from "next/router";
 import { getCurrentUser } from "aws-amplify/auth/server";
+import axios from "axios";
+import toast from "react-hot-toast";
 import { Alert, Divider } from "@aws-amplify/ui-react";
 
 import {
@@ -15,9 +18,6 @@ import {
   runWithAmplifyServerContext,
   timeDuration,
 } from "@/utils";
-import axios from "axios";
-import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
 import { useConfettiStore } from "@/hooks";
 
 type Props = {
@@ -44,20 +44,18 @@ const ChapterIdPage: NextPage<Props> = ({
   const onEnded = async () => {
     try {
       if (completeOnEnd) {
+        confetti.onOpen();
         await axios.put(
           `/api/courses/${course.courseId}/chapters/${chapter.id}/progress`,
           {
             isCompleted: true,
           }
         );
-        if (!nextChapterId) {
-          confetti.onOpen();
-        }
         toast.success("Progress updated");
         if (nextChapterId) {
           router.push(`/courses/${course.courseId}/chapters/${nextChapterId}`);
         } else {
-          router.refresh();
+          router.reload();
         }
       }
     } catch {
@@ -73,30 +71,32 @@ const ChapterIdPage: NextPage<Props> = ({
       progressCount={progressCount}
       chapters={chapters}
     >
-      <div className="px-4 py-2">
+      <div className="p-4 flex flex-col max-w-4xl mx-auto">
         {chapter.isCompleted ? (
-          <Alert
-            variation="success"
-            isDismissible={false}
-            hasIcon={true}
-            heading=""
-          >
-            You already completed this chapter.
-          </Alert>
+          <div className="rounded-md overflow-hidden">
+            <Alert
+              variation="success"
+              isDismissible={false}
+              hasIcon={true}
+              heading=""
+            >
+              You already completed this chapter.
+            </Alert>
+          </div>
         ) : (
           <></>
         )}
-      </div>
-      <div className="px-4 py-2">
         {isLocked ? (
-          <Alert
-            variation="warning"
-            isDismissible={false}
-            hasIcon={true}
-            heading=""
-          >
-            You need to purchase this course to see this chapter.
-          </Alert>
+          <div className="rounded-md overflow-hidden">
+            <Alert
+              variation="warning"
+              isDismissible={false}
+              hasIcon={true}
+              heading=""
+            >
+              You need to purchase this course to see this chapter.
+            </Alert>
+          </div>
         ) : (
           <></>
         )}
@@ -202,6 +202,15 @@ export const getServerSideProps: GetServerSideProps = async ({
         return JSON.parse(JSON.stringify(chapters.sort(orderByPosition)));
       },
     });
+
+    if (!chapters) {
+      return {
+        redirect: {
+          destination: "/",
+          permanent: false,
+        },
+      };
+    }
 
     const userProgress: UserProgressValues[] =
       await runWithAmplifyServerContext({
