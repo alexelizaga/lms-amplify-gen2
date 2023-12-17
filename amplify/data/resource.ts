@@ -44,6 +44,14 @@ const schema = a.schema({
       course: a.belongsTo("Course"),
     })
     .authorization([a.allow.owner(), a.allow.private().to(["read"])]),
+  UserProgress: a
+    .model({
+      chapterId: a.id().required(),
+      userId: a.id().required(),
+      courseId: a.id().required(),
+      isCompleted: a.boolean().default(false),
+    })
+    .authorization([a.allow.owner(), a.allow.private().to(["read"])]),
 });
 
 export type Schema = ClientSchema<typeof schema>;

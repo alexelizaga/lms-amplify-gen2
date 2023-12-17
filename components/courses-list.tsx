@@ -2,7 +2,7 @@ import { CourseCard } from "@/components/course-card";
 import { CourseValues } from "@/types";
 
 interface CoursesListProps {
-  items: CourseValues[];
+  items: (CourseValues & { userProgress: number; numberOfChapters: number })[];
 }
 
 export const CoursesList = ({ items }: CoursesListProps) => {
@@ -15,9 +15,9 @@ export const CoursesList = ({ items }: CoursesListProps) => {
             id={item.courseId}
             title={item.title}
             imageUrl={item.imageUrl || ""}
-            chaptersLength={2}
+            chaptersLength={item.numberOfChapters}
             price={item.price || 0}
-            progress={0}
+            progress={item.userProgress}
             category={"Music"}
           />
         ))}

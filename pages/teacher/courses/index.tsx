@@ -21,12 +21,12 @@ const CoursesPage: NextPage<Props> = ({ userCourses }) => {
   return (
     <DashboardLayout title="Teacher - Courses" pageDescription="">
       <div className="px-6 pb-16">
-        <Heading marginBottom={16} level={2}>
+        <Heading marginBottom={16} level={3}>
           My courses
         </Heading>
         <div className="flex justify-end mb-6">
           <Link href="/teacher/create">
-            <Button variation="link">
+            <Button variation="link" size="small">
               <PlusCircle className="h-4 w-4 mr-2" />
               New Course
             </Button>

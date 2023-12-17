@@ -7,7 +7,12 @@ import {
   DashboardLayout,
   SearchInput,
 } from "@/components";
-import { CategoryValues, CourseValues } from "@/types";
+import {
+  CategoryValues,
+  ChapterValues,
+  CourseValues,
+  UserProgressValues,
+} from "@/types";
 import {
   orderByTitle,
   reqResBasedClient,
@@ -16,14 +21,17 @@ import {
 
 type Props = {
   categories: CategoryValues[];
-  courses: CourseValues[];
+  courses: (CourseValues & {
+    userProgress: number;
+    numberOfChapters: number;
+  })[];
 };
 
 const SearchPage: NextPage<Props> = ({ categories, courses }) => {
   return (
     <DashboardLayout title="Search" pageDescription="">
-      <div className="px-6 pb-16">
-        <div className="mb-2 block">
+      <div className="px-6 pb-6">
+        <div className="block">
           <Categories items={categories} />
         </div>
         <div className="space-y-4">
@@ -75,7 +83,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       },
     });
 
-    const courses = await runWithAmplifyServerContext({
+    const courses: CourseValues[] = await runWithAmplifyServerContext({
       nextServerContext: { request: req, response: res },
       operation: async (contextSpec) => {
         const { data: courses } = await reqResBasedClient.models.Course.list(
@@ -94,7 +102,48 @@ export const getServerSideProps: GetServerSideProps = async ({
       },
     });
 
-    return { props: { categories, courses } };
+    const userProgress: UserProgressValues[] =
+      await runWithAmplifyServerContext({
+        nextServerContext: { request: req, response: res },
+        operation: async (contextSpec) => {
+          const { data: usersProgress } =
+            await reqResBasedClient.models.UserProgress.list(contextSpec, {
+              filter: {
+                and: [{ userId: { eq: userId } }],
+              },
+            });
+          return JSON.parse(JSON.stringify(usersProgress));
+        },
+      });
+
+    const chapters: ChapterValues[] = await runWithAmplifyServerContext({
+      nextServerContext: { request: req, response: res },
+      operation: async (contextSpec) => {
+        const { data: chapters } = await reqResBasedClient.models.Chapter.list(
+          contextSpec
+        );
+        return JSON.parse(JSON.stringify(chapters));
+      },
+    });
+
+    const coursesWithProgress = courses.map((course) => {
+      const chaptersCompleted = userProgress.filter(
+        (progress) =>
+          progress.courseId === course.courseId && progress.isCompleted
+      ).length;
+
+      const numberOfChapters = chapters.filter(
+        (chapter) => chapter.courseChaptersCourseId === course.courseId
+      ).length;
+
+      return {
+        ...course,
+        userProgress: (chaptersCompleted / numberOfChapters) * 100,
+        numberOfChapters: numberOfChapters,
+      };
+    });
+
+    return { props: { categories, courses: coursesWithProgress } };
   } catch (error) {
     return {
       redirect: {

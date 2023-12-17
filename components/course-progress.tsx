@@ -1,6 +1,5 @@
-import { Loader } from "@aws-amplify/ui-react";
-
-import { cn } from "@/utils";
+import React from "react";
+import { Loader, Text } from "@aws-amplify/ui-react";
 
 interface CourseProgressProps {
   value: number;
@@ -8,21 +7,13 @@ interface CourseProgressProps {
   size?: "default" | "sm";
 }
 
-const colorByVariant = {
-  default: "text-sky-700",
-  success: "text-emerald-700",
-};
-
-const sizeByVariant = {
-  default: "text-sm",
-  sm: "text-xs",
-};
-
 export const CourseProgress = ({
   value,
   variant,
   size,
 }: CourseProgressProps) => {
+  const isSuccess = React.useMemo(() => variant === "success", [variant]);
+  const isSmall = React.useMemo(() => size === "sm", [size]);
   return (
     <div className="w-full px-2 overflow-hidden">
       <Loader
@@ -32,15 +23,12 @@ export const CourseProgress = ({
         isDeterminate
         isPercentageTextHidden
       />
-      <p
-        className={cn(
-          "font-medium mt-2 text-sky-700",
-          colorByVariant[variant ?? "default"],
-          sizeByVariant[size ?? "default"]
-        )}
+      <Text
+        variation={isSuccess ? "success" : "primary"}
+        fontSize={isSmall ? "12px" : "14px"}
       >
         {Math.round(value)}% Completed
-      </p>
+      </Text>
     </div>
   );
 };
