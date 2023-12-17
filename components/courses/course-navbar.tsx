@@ -4,7 +4,7 @@ import { NavbarRoutes, CourseMobileSidebar } from "@/components";
 interface CourseNavbarProps {
   course: CourseValues;
   progressCount: number;
-  chapters: ChapterValues[];
+  chapters: (ChapterValues & { isCompleted: boolean })[];
 }
 
 export const CourseNavbar = ({
