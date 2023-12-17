@@ -67,12 +67,7 @@ export const Actions = ({
 
   return (
     <div className="flex items-center gap-x-2">
-      <Button
-        onClick={onClick}
-        disabled={disabled || isLoading}
-        variation="link"
-        size="small"
-      >
+      <Button onClick={onClick} disabled={disabled || isLoading} size="small">
         {isPublished ? "Unpublish" : "Publish"}
       </Button>
       <Button size="small" disabled={isLoading} onClick={openModal}>

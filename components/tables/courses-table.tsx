@@ -26,7 +26,7 @@ export function CoursesTable({ data }: DataTableProps) {
   };
 
   return (
-    <Table>
+    <Table size="small">
       <TableHead>
         <TableRow>
           <TableCell as="th">Nº</TableCell>

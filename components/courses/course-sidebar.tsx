@@ -4,7 +4,7 @@ import { CourseProgress, CourseSidebarItem } from "@/components";
 interface CourseSidebarProps {
   course: CourseValues;
   progressCount: number;
-  chapters: ChapterValues[];
+  chapters: (ChapterValues & { isCompleted: boolean })[];
 }
 
 export const CourseSidebar = ({
@@ -17,7 +17,10 @@ export const CourseSidebar = ({
       <div className="p-4 md:py-8 md:px-6 flex flex-col">
         <h1 className="font-semibold">{course.title}</h1>
         <div className="mt-4 md:mt-6">
-          <CourseProgress variant="success" value={progressCount} />
+          <CourseProgress
+            variant={progressCount === 100 ? "success" : "default"}
+            value={progressCount}
+          />
         </div>
       </div>
       <div className="flex flex-col w-full">
@@ -26,7 +29,7 @@ export const CourseSidebar = ({
             key={chapter.id}
             id={chapter.id}
             label={chapter.title}
-            isCompleted={false}
+            isCompleted={chapter.isCompleted}
             courseId={course.courseId}
             isLocked={!chapter.isFree}
           />

@@ -55,3 +55,8 @@ export type PhotoValues = {
   url: string;
   width: number;
 };
+
+export type UserProgressValues = Pick<
+  Schema["UserProgress"],
+  "chapterId" | "isCompleted" | "owner" | "courseId" | "userId"
+>;

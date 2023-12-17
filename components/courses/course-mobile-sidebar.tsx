@@ -7,7 +7,7 @@ import { CourseSidebar } from "@/components";
 interface CourseMobileSidebarProps {
   course: CourseValues;
   progressCount: number;
-  chapters: ChapterValues[];
+  chapters: (ChapterValues & { isCompleted: boolean })[];
 }
 
 export const CourseMobileSidebar = ({

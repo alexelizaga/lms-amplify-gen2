@@ -1,7 +1,12 @@
 import React from "react";
 import { GetServerSideProps, NextPage } from "next";
 import { getCurrentUser } from "aws-amplify/auth/server";
-import { CircleDollarSign, LayoutDashboard, ListChecks } from "lucide-react";
+import {
+  ArrowLeft,
+  CircleDollarSign,
+  LayoutDashboard,
+  ListChecks,
+} from "lucide-react";
 
 import { reqResBasedClient, runWithAmplifyServerContext } from "@/utils";
 import {
@@ -17,6 +22,7 @@ import {
 } from "@/components";
 import { CategoryValues, ChapterValues, CourseValues } from "@/types";
 import { Alert, View, useTheme } from "@aws-amplify/ui-react";
+import Link from "next/link";
 
 type Props = {
   course: CourseValues;
@@ -68,18 +74,29 @@ const CourseIdPage: NextPage<Props> = ({ course, categories, chapters }) => {
           <></>
         )}
         <div className="flex items-center justify-between">
-          <div className="flex flex-col gap-y-2">
-            <h1 className="text-2xl font-medium">Course setup</h1>
-            <View color={tokens.colors.primary[30]} className="text-sm">
-              Complete all fields {completionText}
-            </View>
+          <div className="w-full">
+            <Link
+              href={`/teacher/courses`}
+              className="flex items-center text-sm hover:opacity-75 transition mb-6"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Back to courses
+            </Link>
+            <div className="flex items-center justify-between w-full">
+              <div className="flex flex-col gap-y-2">
+                <h1 className="text-2xl font-medium">Course setup</h1>
+                <View color={tokens.colors.primary[30]} className="text-sm">
+                  Complete all fields {completionText}
+                </View>
+              </div>
+              <Actions
+                disabled={!isComplete}
+                courseId={course.courseId}
+                isPublished={course.isPublished ?? false}
+                hasChapters={!!chapters.length}
+              />
+            </div>
           </div>
-          <Actions
-            disabled={!isComplete}
-            courseId={course.courseId}
-            isPublished={course.isPublished ?? false}
-            hasChapters={!!chapters.length}
-          />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-10">
           <div>

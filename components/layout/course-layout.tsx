@@ -11,7 +11,7 @@ type Props = {
   imageFullUrl?: string;
   course: CourseValues;
   progressCount: number;
-  chapters: ChapterValues[];
+  chapters: (ChapterValues & { isCompleted: boolean })[];
 };
 
 export const CourseLayout: React.FC<Props> = ({
