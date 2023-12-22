@@ -22,16 +22,16 @@ export default async function handler(
   }
 
   if (req.method === "GET") {
+    deleteUsersProgress(req, res);
+    deleteChapters(req, res);
     deleteCourses(req, res);
     deleteCategories(req, res);
-    deleteChapters(req, res);
-    deleteUsersProgress(req, res);
 
     return res.status(200).json({
-      "Delete courses": "done",
-      "Delete chapters": "done",
-      "Delete categories": "done",
       "Delete users progress": "done",
+      "Delete chapters": "done",
+      "Delete courses": "done",
+      "Delete categories": "done",
     });
   }
 

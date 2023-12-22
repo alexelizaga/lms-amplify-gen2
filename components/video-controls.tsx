@@ -58,7 +58,9 @@ export const VideoControls = ({
           <PlayIcon size={24} />
         </button>
         <div className="flex items-center w-full">
-          <span className="text-white mr-2">{formatTime(progress)}</span>
+          <span className="text-white mr-2">
+            {formatTime(progress < 0 ? 0 : progress)}
+          </span>
           <div className="relative w-full h-1.5 bg-gray-600 rounded-full mr-3">
             <input
               type="range"
