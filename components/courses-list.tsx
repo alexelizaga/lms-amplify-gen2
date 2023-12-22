@@ -2,7 +2,11 @@ import { CourseCard } from "@/components/course-card";
 import { CourseValues } from "@/types";
 
 interface CoursesListProps {
-  items: (CourseValues & { userProgress: number; numberOfChapters: number })[];
+  items: (CourseValues & {
+    userProgress: number;
+    numberOfChapters: number;
+    categoryLabel: string;
+  })[];
 }
 
 export const CoursesList = ({ items }: CoursesListProps) => {
@@ -18,7 +22,7 @@ export const CoursesList = ({ items }: CoursesListProps) => {
             chaptersLength={item.numberOfChapters}
             price={item.price ?? 0}
             progress={item.userProgress}
-            category={"Music"}
+            category={item.categoryLabel}
           />
         ))}
       </div>

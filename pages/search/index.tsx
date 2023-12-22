@@ -24,6 +24,7 @@ type Props = {
   courses: (CourseValues & {
     userProgress: number;
     numberOfChapters: number;
+    categoryLabel: string;
   })[];
 };
 
@@ -74,7 +75,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       };
     }
 
-    const categories = await runWithAmplifyServerContext({
+    const categories: CategoryValues[] = await runWithAmplifyServerContext({
       nextServerContext: { request: req, response: res },
       operation: async (contextSpec) => {
         const { data: categories } =
@@ -126,6 +127,13 @@ export const getServerSideProps: GetServerSideProps = async ({
       },
     });
 
+    const getCategory = (categoryId: string | undefined): string => {
+      if (!categoryId) return "";
+      return (
+        categories.find((category) => category.id === categoryId)?.name ?? ""
+      );
+    };
+
     const coursesWithProgress = courses.map((course) => {
       const chaptersCompleted = userProgress.filter(
         (progress) =>
@@ -140,6 +148,7 @@ export const getServerSideProps: GetServerSideProps = async ({
         ...course,
         userProgress: (chaptersCompleted / numberOfChapters) * 100,
         numberOfChapters: numberOfChapters,
+        categoryLabel: getCategory(course.categoryCoursesId),
       };
     });
 
