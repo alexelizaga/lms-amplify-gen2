@@ -5,8 +5,8 @@ import toast from "react-hot-toast";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Pencil } from "lucide-react";
-import { Button, Flex, View } from "@aws-amplify/ui-react";
+import { Pencil, Save, X } from "lucide-react";
+import { Button, Flex, View, useTheme } from "@aws-amplify/ui-react";
 
 import { cn } from "@/utils/cn";
 import { Combobox } from "@/components/combo-box";
@@ -22,6 +22,7 @@ const formSchema = z.object({
 });
 
 export const CategoryForm = ({ initialData, options }: CategoryFormProps) => {
+  const { tokens } = useTheme();
   const router = useRouter();
   const [isEditing, setIsEditing] = React.useState(false);
 
@@ -55,17 +56,18 @@ export const CategoryForm = ({ initialData, options }: CategoryFormProps) => {
   }, [initialData.categoryCoursesId, options]);
 
   return (
-    <View className="mt-6 border rounded-md p-4">
+    <View
+      color={tokens.colors.primary[100]}
+      backgroundColor={tokens.colors.neutral[10]}
+      className="mt-6 border rounded-md p-4"
+    >
       <div className="font-medium flex items-center justify-between">
         Category
-        <Button onClick={toggleEdit} variation="link" size="small">
+        <Button variation="link" size="small" onClick={toggleEdit}>
           {isEditing ? (
-            <>Cancel</>
+            <X className="h-4 w-4" />
           ) : (
-            <>
-              <Pencil className="h-4 w-4 mr-2" />
-              Edit
-            </>
+            <Pencil className="h-4 w-4" />
           )}
         </Button>
       </div>
@@ -99,11 +101,13 @@ export const CategoryForm = ({ initialData, options }: CategoryFormProps) => {
           </Flex>
           <div className="flex items-center gap-x-2">
             <Button
-              variation="link"
+              type="submit"
+              variation="primary"
+              size="small"
               disabled={!isValid}
               isLoading={isSubmitting}
-              type="submit"
             >
+              <Save className="h-4 w-4 mr-2" />
               Save
             </Button>
           </div>

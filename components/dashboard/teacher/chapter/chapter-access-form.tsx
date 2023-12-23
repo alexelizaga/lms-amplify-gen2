@@ -12,7 +12,7 @@ import {
   View,
   useTheme,
 } from "@aws-amplify/ui-react";
-import { Pencil } from "lucide-react";
+import { Pencil, Save, X } from "lucide-react";
 
 import { ChapterValues } from "@/types";
 import { cn } from "@/utils";
@@ -65,14 +65,11 @@ export const ChapterAccessForm = ({ initialData }: ChapterAccessFormProps) => {
     >
       <div className="font-medium flex items-center justify-between">
         Access
-        <Button onClick={toggleEdit} variation="link" size="small">
+        <Button variation="link" size="small" onClick={toggleEdit}>
           {isEditing ? (
-            <>Cancel</>
+            <X className="h-4 w-4" />
           ) : (
-            <>
-              <Pencil className="h-4 w-4 mr-2" />
-              Edit
-            </>
+            <Pencil className="h-4 w-4" />
           )}
         </Button>
       </div>
@@ -99,7 +96,7 @@ export const ChapterAccessForm = ({ initialData }: ChapterAccessFormProps) => {
               type="checkbox"
               checked={getValues("isFree")}
               disabled={isSubmitting}
-              label="Check this box if you want to make this chapter free for preview"
+              label="Make this chapter free for preview"
               onChange={({ target }) => {
                 setValue("isFree", target.checked, {
                   shouldValidate: true,
@@ -110,10 +107,12 @@ export const ChapterAccessForm = ({ initialData }: ChapterAccessFormProps) => {
           </Flex>
           <div className="flex items-center gap-x-2">
             <Button
+              type="submit"
+              variation="primary"
               size="small"
               disabled={!isValid || isSubmitting}
-              type="submit"
             >
+              <Save className="h-4 w-4 mr-2" />
               Save
             </Button>
           </div>

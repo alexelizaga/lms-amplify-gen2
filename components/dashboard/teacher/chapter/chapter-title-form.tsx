@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Button, Flex, Input, View, useTheme } from "@aws-amplify/ui-react";
-import { Pencil } from "lucide-react";
+import { Pencil, Save, X } from "lucide-react";
 
 import { ChapterValues } from "@/types";
 
@@ -57,14 +57,11 @@ export const ChapterTitleForm = ({ initialData }: ChapterTitleFormProps) => {
     >
       <div className="font-medium flex items-center justify-between">
         Title
-        <Button onClick={toggleEdit} variation="link" size="small">
+        <Button variation="link" size="small" onClick={toggleEdit}>
           {isEditing ? (
-            <>Cancel</>
+            <X className="h-4 w-4" />
           ) : (
-            <>
-              <Pencil className="h-4 w-4 mr-2" />
-              Edit
-            </>
+            <Pencil className="h-4 w-4" />
           )}
         </Button>
       </div>
@@ -85,11 +82,13 @@ export const ChapterTitleForm = ({ initialData }: ChapterTitleFormProps) => {
           </Flex>
           <div className="flex items-center gap-x-2">
             <Button
+              type="submit"
+              variation="primary"
               size="small"
               disabled={!isValid}
               isLoading={isSubmitting}
-              type="submit"
             >
+              <Save className="h-4 w-4 mr-2" />
               Save
             </Button>
           </div>
