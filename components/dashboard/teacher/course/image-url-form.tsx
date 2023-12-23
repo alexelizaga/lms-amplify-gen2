@@ -2,7 +2,7 @@ import React from "react";
 import * as z from "zod";
 import { CourseValues } from "@/types";
 import { Button, Flex, View, useTheme } from "@aws-amplify/ui-react";
-import { Pencil, PlusCircle } from "lucide-react";
+import { FilePlus2, Pencil, X } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useRouter } from "next/router";
@@ -45,19 +45,11 @@ export const ImageUrlForm = ({ initialData }: ImageUrlFormProps) => {
       <div className="font-medium flex items-center justify-between">
         Image
         <Button onClick={toggleEdit} variation="link" size="small">
-          {isEditing && <>Cancel</>}
+          {isEditing && <X className="h-4 w-4" />}
           {!isEditing && !initialData.imageUrl && (
-            <>
-              <PlusCircle className="h-4 w-4 mr-2" />
-              Add an image
-            </>
+            <FilePlus2 className="h-4 w-4" />
           )}
-          {!isEditing && initialData.imageUrl && (
-            <>
-              <Pencil className="h-4 w-4 mr-2" />
-              Edit
-            </>
-          )}
+          {!isEditing && initialData.imageUrl && <Pencil className="h-4 w-4" />}
         </Button>
       </div>
       {!isEditing &&

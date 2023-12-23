@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import { Button, Flex, Input, View, useTheme } from "@aws-amplify/ui-react";
 import toast from "react-hot-toast";
-import { Pencil } from "lucide-react";
+import { Pencil, Save, X } from "lucide-react";
 
 import { CourseValues } from "@/types";
 
@@ -54,14 +54,11 @@ export const TitleForm = ({ initialData }: TitleFormProps) => {
     >
       <div className="font-medium flex items-center justify-between">
         Title
-        <Button onClick={toggleEdit} variation="link" size="small">
+        <Button variation="link" size="small" onClick={toggleEdit}>
           {isEditing ? (
-            <>Cancel</>
+            <X className="h-4 w-4" />
           ) : (
-            <>
-              <Pencil className="h-4 w-4 mr-2" />
-              Edit
-            </>
+            <Pencil className="h-4 w-4" />
           )}
         </Button>
       </div>
@@ -82,12 +79,13 @@ export const TitleForm = ({ initialData }: TitleFormProps) => {
           </Flex>
           <div className="flex items-center gap-x-2">
             <Button
-              variation="link"
+              type="submit"
+              variation="primary"
+              size="small"
               disabled={!isValid}
               isLoading={isSubmitting}
-              type="submit"
-              size="small"
             >
+              <Save className="h-4 w-4 mr-2" />
               Save
             </Button>
           </div>

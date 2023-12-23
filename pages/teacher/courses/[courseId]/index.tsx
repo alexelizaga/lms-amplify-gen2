@@ -105,10 +105,9 @@ const CourseIdPage: NextPage<Props> = ({ course, categories, chapters }) => {
               <h2 className="text-xl">Customize your course</h2>
             </div>
             <TitleForm initialData={course} />
-            <DescriptionForm initialData={course} />
-            {/* <ImageForm initialData={course} onSubmit={onSubmit} /> */}
-            <ImageUrlForm initialData={course} />
             <CategoryForm initialData={course} options={categoryOptions} />
+            <DescriptionForm initialData={course} />
+            <ImageUrlForm initialData={course} />
           </div>
           <div className="space-y-6">
             <div>

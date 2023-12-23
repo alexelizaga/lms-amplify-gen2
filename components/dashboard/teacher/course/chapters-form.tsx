@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { Button, Flex, Input, View, useTheme } from "@aws-amplify/ui-react";
 import toast from "react-hot-toast";
-import { Loader2, PlusCircle } from "lucide-react";
+import { FilePlus2, Loader2, Plus, X } from "lucide-react";
 
 import { ChapterValues, CourseValues } from "@/types";
 import { cn } from "@/utils";
@@ -101,12 +101,9 @@ export const ChaptersForm = ({ initialData }: ChaptersFormProps) => {
         Chapters
         <Button onClick={toggleCreating} variation="link" size="small">
           {isCreating ? (
-            <>Cancel</>
+            <X className="h-4 w-4" />
           ) : (
-            <>
-              <PlusCircle className="h-4 w-4 mr-2" />
-              Add
-            </>
+            <FilePlus2 className="h-4 w-4" />
           )}
         </Button>
       </div>
@@ -126,11 +123,13 @@ export const ChaptersForm = ({ initialData }: ChaptersFormProps) => {
           </Flex>
 
           <Button
+            type="submit"
+            variation="primary"
             size="small"
             disabled={!isValid}
             isLoading={isSubmitting}
-            type="submit"
           >
+            <FilePlus2 className="h-4 w-4 mr-2" />
             Create
           </Button>
         </form>

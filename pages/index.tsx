@@ -41,8 +41,8 @@ const Home: NextPage<Props> = ({ coursesInProgress, completedCourses }) => {
             numberOfItems={0}
             variant="success"
           />
-          <CoursesList items={[...coursesInProgress, ...completedCourses]} />
         </div>
+        <CoursesList items={[...coursesInProgress, ...completedCourses]} />
       </div>
     </DashboardLayout>
   );
@@ -61,9 +61,9 @@ export const getServerSideProps: GetServerSideProps = async ({
 
     if (!userId) {
       return {
-        redirect: {
-          destination: "/",
-          permanent: false,
+        props: {
+          coursesInProgress: [],
+          completedCourses: [],
         },
       };
     }
@@ -72,9 +72,9 @@ export const getServerSideProps: GetServerSideProps = async ({
 
     if (typeof title !== "string" || typeof categoryId !== "string") {
       return {
-        redirect: {
-          destination: "/",
-          permanent: false,
+        props: {
+          coursesInProgress: [],
+          completedCourses: [],
         },
       };
     }
@@ -168,9 +168,9 @@ export const getServerSideProps: GetServerSideProps = async ({
     };
   } catch (error) {
     return {
-      redirect: {
-        destination: "/",
-        permanent: false,
+      props: {
+        coursesInProgress: [],
+        completedCourses: [],
       },
     };
   }

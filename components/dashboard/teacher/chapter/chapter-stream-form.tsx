@@ -4,9 +4,24 @@ import * as z from "zod";
 import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Clapperboard, Pencil } from "lucide-react";
+import {
+  Clapperboard,
+  FilePlus2,
+  Pencil,
+  Save,
+  Timer,
+  TimerOff,
+  X,
+} from "lucide-react";
 import toast from "react-hot-toast";
-import { Button, Flex, Input, View, useTheme } from "@aws-amplify/ui-react";
+import {
+  Button,
+  Flex,
+  Grid,
+  Input,
+  View,
+  useTheme,
+} from "@aws-amplify/ui-react";
 
 import { ChapterValues } from "@/types";
 import { VideoPlayer } from "@/components";
@@ -69,14 +84,11 @@ export const ChapterStreamForm = ({ initialData }: ChapterYoutubeFormProps) => {
     >
       <div className="font-medium flex items-center justify-between">
         Stream
-        <Button onClick={toggleEdit} variation="link" size="small">
+        <Button variation="link" size="small" onClick={toggleEdit}>
           {isEditing ? (
-            <>Cancel</>
+            <X className="h-4 w-4" />
           ) : (
-            <>
-              <Pencil className="h-4 w-4 mr-2" />
-              Edit
-            </>
+            <FilePlus2 className="h-4 w-4" />
           )}
         </Button>
       </div>
@@ -110,48 +122,56 @@ export const ChapterStreamForm = ({ initialData }: ChapterYoutubeFormProps) => {
               </p>
             )}
           </Flex>
-          <div className="flex items-center gap-x-2">
-            <div>Start</div>
-            <div className="w-full">
-              <Input
-                id="streamStartTime"
-                type="text"
-                hasError={!!errors.streamStartTime}
-                disabled={isSubmitting}
-                placeholder="HH:mm:ss"
-                {...register("streamStartTime")}
-              />
-              {errors.streamStartTime?.message && (
-                <p className="text-sm text-red-800">
-                  {errors.streamStartTime?.message}
-                </p>
-              )}
+          <Grid templateColumns="1fr 1fr" gap={tokens.space.medium}>
+            <div className="flex items-center">
+              <Timer className="h-6 w-6" />
+              <div className="w-full">
+                <Input
+                  variation="quiet"
+                  size="small"
+                  id="streamStartTime"
+                  type="text"
+                  hasError={!!errors.streamStartTime}
+                  disabled={isSubmitting}
+                  placeholder="hh:mm:ss"
+                  {...register("streamStartTime")}
+                />
+                {errors.streamStartTime?.message && (
+                  <p className="text-sm text-red-800">
+                    {errors.streamStartTime?.message}
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
-          <div className="flex items-center gap-x-2">
-            <div className="w-max">End</div>
-            <div className="w-full">
-              <Input
-                id="streamEndTime"
-                type="text"
-                hasError={!!errors.streamEndTime}
-                disabled={isSubmitting}
-                placeholder="HH:mm:ss"
-                {...register("streamEndTime")}
-              />
-              {errors.streamEndTime?.message && (
-                <p className="text-sm text-red-800">
-                  {errors.streamEndTime?.message}
-                </p>
-              )}
+            <div className="flex items-center">
+              <TimerOff className="h-6 w-6" />
+              <div className="w-full">
+                <Input
+                  variation="quiet"
+                  size="small"
+                  id="streamEndTime"
+                  type="text"
+                  hasError={!!errors.streamEndTime}
+                  disabled={isSubmitting}
+                  placeholder="hh:mm:ss"
+                  {...register("streamEndTime")}
+                />
+                {errors.streamEndTime?.message && (
+                  <p className="text-sm text-red-800">
+                    {errors.streamEndTime?.message}
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
+          </Grid>
           <div className="flex items-center gap-x-2">
             <Button
+              type="submit"
+              variation="primary"
               size="small"
               disabled={!isValid || isSubmitting}
-              type="submit"
             >
+              <Save className="h-4 w-4 mr-2" />
               Save
             </Button>
           </div>
