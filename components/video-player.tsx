@@ -1,5 +1,5 @@
 import React from "react";
-import ReactPlayer from "react-player";
+import ReactPlayer from "react-player/lazy";
 import { OnProgressProps } from "react-player/base";
 import screenfull from "screenfull";
 import { Lock } from "lucide-react";
@@ -41,12 +41,12 @@ export const VideoPlayer = ({
   const videoUrl = React.useMemo(() => {
     const saveUrl = qs.parseUrl(url);
     if (url.includes("youtube")) {
-      return `${saveUrl.url}?v=${saveUrl.query.v}&t=${start}s`;
+      return `${saveUrl.url}?v=${saveUrl.query.v}`;
     }
     if (url.includes("vimeo")) {
-      return `${saveUrl.url}#t=${start}s`;
+      return `${saveUrl.url}`;
     }
-  }, [start, url]);
+  }, [url]);
 
   const onPlaying = () => {
     setIsPlaying((current) => !current);
@@ -89,6 +89,12 @@ export const VideoPlayer = ({
     }
   };
 
+  React.useEffect(() => {
+    if (!videoRef.current) return;
+    setPlayed(start);
+    videoRef.current?.seekTo(start);
+  }, [start]);
+
   return (
     <>
       {isLocked && (
@@ -114,6 +120,10 @@ export const VideoPlayer = ({
               playbackRate={parseFloat(playbackRate)}
               width={"100%"}
               height={"100%"}
+              onStart={() => {
+                setPlayed(start);
+                videoRef.current?.seekTo(start);
+              }}
             />
           </div>
           <button
