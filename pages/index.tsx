@@ -34,11 +34,15 @@ const Home: NextPage<Props> = ({ coursesInProgress, completedCourses }) => {
     <DashboardLayout title="Home" pageDescription="">
       <div className="px-6 pb-16">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <InfoCard icon={Clock} label="In Progress" numberOfItems={0} />
+          <InfoCard
+            icon={Clock}
+            label="In Progress"
+            numberOfItems={coursesInProgress.length}
+          />
           <InfoCard
             icon={CheckCircle}
             label="Completed"
-            numberOfItems={0}
+            numberOfItems={completedCourses.length}
             variant="success"
           />
         </div>
