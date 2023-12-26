@@ -126,7 +126,7 @@ export const ChaptersForm = ({ initialData }: ChaptersFormProps) => {
             type="submit"
             variation="primary"
             size="small"
-            disabled={!isValid}
+            isDisabled={!isValid}
             isLoading={isSubmitting}
           >
             <FilePlus2 className="h-4 w-4 mr-2" />

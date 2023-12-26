@@ -14,6 +14,7 @@ import {
   UserProgressValues,
 } from "@/types";
 import {
+  orderByName,
   orderByTitle,
   reqResBasedClient,
   runWithAmplifyServerContext,
@@ -80,7 +81,7 @@ export const getServerSideProps: GetServerSideProps = async ({
       operation: async (contextSpec) => {
         const { data: categories } =
           await reqResBasedClient.models.Category.list(contextSpec);
-        return JSON.parse(JSON.stringify(categories));
+        return JSON.parse(JSON.stringify(categories.sort(orderByName)));
       },
     });
 

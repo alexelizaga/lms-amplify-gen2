@@ -104,7 +104,7 @@ export const CategoryForm = ({ initialData, options }: CategoryFormProps) => {
               type="submit"
               variation="primary"
               size="small"
-              disabled={!isValid}
+              isDisabled={!isValid}
               isLoading={isSubmitting}
             >
               <Save className="h-4 w-4 mr-2" />
