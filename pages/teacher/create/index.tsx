@@ -61,7 +61,7 @@ const CreatePage = () => {
               <Input
                 id="title"
                 hasError={!!errors.title}
-                disabled={isSubmitting}
+                isDisabled={isSubmitting}
                 placeholder="e.g. 'Advanced web development'"
                 {...register("title")}
               />
@@ -77,7 +77,7 @@ const CreatePage = () => {
               </Link>
               <Button
                 type="submit"
-                disabled={!isValid}
+                isDisabled={!isValid}
                 isLoading={isSubmitting}
                 loadingText="Loading..."
               >

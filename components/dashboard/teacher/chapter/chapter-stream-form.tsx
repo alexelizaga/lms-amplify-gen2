@@ -85,10 +85,12 @@ export const ChapterStreamForm = ({ initialData }: ChapterYoutubeFormProps) => {
       <div className="font-medium flex items-center justify-between">
         Stream
         <Button variation="link" size="small" onClick={toggleEdit}>
-          {isEditing ? (
-            <X className="h-4 w-4" />
-          ) : (
+          {isEditing && <X className="h-4 w-4" />}
+          {!isEditing && !initialData.streamUrl && (
             <FilePlus2 className="h-4 w-4" />
+          )}
+          {!isEditing && initialData.streamUrl && (
+            <Pencil className="h-4 w-4" />
           )}
         </Button>
       </div>
