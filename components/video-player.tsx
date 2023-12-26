@@ -31,9 +31,11 @@ export const VideoPlayer = ({
   onEnded,
 }: VideoPlayerProps) => {
   const videoRef = React.useRef<ReactPlayer>(null);
+  const [isReady, setIsReady] = React.useState(false);
+  const [isStarted, setIsStarted] = React.useState(false);
 
   const [isPlaying, setIsPlaying] = React.useState(playing);
-  const [volume, setVolume] = React.useState(1);
+  const [volume, setVolume] = React.useState(0);
   const [playbackRate, setPlaybackRate] = React.useState("1");
   const [isFullscreen, setIsFullscreen] = React.useState(false);
   const [played, setPlayed] = React.useState(start);
@@ -80,20 +82,21 @@ export const VideoPlayer = ({
   };
 
   const onProgress = ({ playedSeconds }: OnProgressProps) => {
-    setPlayed(playedSeconds);
-    if (playedSeconds > end) {
+    if (isStarted) {
+      setPlayed(playedSeconds);
+    }
+
+    if (isStarted && playedSeconds > end) {
       setIsPlaying(false);
       videoRef.current?.seekTo(end);
-      setPlayed(end);
       onEnded && onEnded();
     }
   };
 
   React.useEffect(() => {
-    if (!videoRef.current) return;
-    setPlayed(start);
+    if (!isReady) return;
     videoRef.current?.seekTo(start);
-  }, [start]);
+  }, [isReady, start]);
 
   return (
     <>
@@ -120,15 +123,18 @@ export const VideoPlayer = ({
               playbackRate={parseFloat(playbackRate)}
               width={"100%"}
               height={"100%"}
+              onReady={() => setIsReady(true)}
               onStart={() => {
-                setPlayed(start);
+                setIsStarted(true);
                 videoRef.current?.seekTo(start);
+                setVolume(1);
               }}
             />
           </div>
           <button
             className={cn(
               "opacity-0 transition ease-in delay-100 duration-1000 bg-black absolute top-0 left-0 right-0 aspect-video",
+              !isStarted && "delay-500",
               !isPlaying && "opacity-100 ease-out delay-0 duration-0"
             )}
             onClick={onPlaying}

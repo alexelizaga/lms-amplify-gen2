@@ -42,7 +42,9 @@ const Home: NextPage<Props> = ({ coursesInProgress, completedCourses }) => {
             variant="success"
           />
         </div>
-        <CoursesList items={[...coursesInProgress, ...completedCourses]} />
+        <div className="py-6">
+          <CoursesList items={[...coursesInProgress, ...completedCourses]} />
+        </div>
       </div>
     </DashboardLayout>
   );
