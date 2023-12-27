@@ -1,7 +1,7 @@
 import React from "react";
 import * as z from "zod";
 import { CourseValues } from "@/types";
-import { Button, Flex, View, useTheme } from "@aws-amplify/ui-react";
+import { Button, View, useTheme } from "@aws-amplify/ui-react";
 import { FilePlus2, Pencil, X } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
@@ -66,11 +66,9 @@ export const ImageUrlForm = ({ initialData }: ImageUrlFormProps) => {
           </div>
         ))}
       {isEditing && (
-        <form className="space-y-4 mt-4">
-          <Flex direction="column" gap="small">
-            <SearchImage onSelectedPhoto={onSubmit} />
-          </Flex>
-        </form>
+        <div className="space-y-4 mt-4">
+          <SearchImage onSelectedPhoto={onSubmit} />
+        </div>
       )}
     </View>
   );
