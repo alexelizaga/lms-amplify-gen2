@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Button } from "@aws-amplify/ui-react";
 import { BookOpen } from "lucide-react";
 
 import { IconBadge, CourseProgress } from "@/components";
@@ -48,17 +49,19 @@ export const CourseCard = ({
               </span>
             </div>
           </div>
-          {progress !== null ? (
-            <CourseProgress
-              variant={progress === 100 ? "success" : "default"}
-              size="sm"
-              value={progress}
-            />
-          ) : (
-            <p className="text-md md:text-sm font-medium text-slate-700">
-              {formatPrice(price)}
-            </p>
-          )}
+          <div className="h-[50px] overflow-hidden flex flex-col gap-1 justify-center items-center">
+            {progress ? (
+              <CourseProgress
+                variant={progress === 100 ? "success" : "default"}
+                size="sm"
+                value={progress}
+              />
+            ) : (
+              <Button size="small" isFullWidth>
+                {price === 0 ? "Free" : formatPrice(price)}
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </Link>
