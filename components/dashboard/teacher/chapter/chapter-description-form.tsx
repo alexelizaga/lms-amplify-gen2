@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Pencil, Save, X } from "lucide-react";
-import { Button, Flex, View, useTheme } from "@aws-amplify/ui-react";
+import { Button, Flex, Text, View, useTheme } from "@aws-amplify/ui-react";
 
 import { ChapterValues } from "@/types";
 import { cn } from "@/utils";
@@ -16,8 +16,10 @@ interface ChapterDescriptionFormProps {
   initialData: ChapterValues;
 }
 
+const isEmpty = (value: string) => /<p><br><\/p>/.test(value);
+
 const formSchema = z.object({
-  description: z.string().min(1, {
+  description: z.string().refine((value) => !isEmpty(value), {
     message: "Description is required",
   }),
 });
@@ -38,8 +40,11 @@ export const ChapterDescriptionForm = ({
     },
   });
 
-  const { setValue, getValues } = form;
-  const { isSubmitting, isValid, errors } = form.formState;
+  const {
+    setValue,
+    getValues,
+    formState: { isSubmitting, isValid, errors },
+  } = form;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -86,7 +91,7 @@ export const ChapterDescriptionForm = ({
       )}
       {isEditing && (
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
-          <Flex direction="column" gap="small" minHeight={114}>
+          <Flex direction="column" gap="small" minHeight={89}>
             <Editor
               value={getValues("description")}
               onChange={(value) => {
@@ -96,11 +101,6 @@ export const ChapterDescriptionForm = ({
                 });
               }}
             />
-            {errors.description?.message && (
-              <p className="text-sm text-red-800">
-                {errors.description?.message}
-              </p>
-            )}
           </Flex>
           <div className="flex items-center gap-x-2">
             <Button
@@ -113,6 +113,17 @@ export const ChapterDescriptionForm = ({
               <Save className="h-4 w-4 mr-2" />
               Save
             </Button>
+            {errors.description && (
+              <Text
+                variation="warning"
+                as="p"
+                isTruncated
+                fontSize="0.9em"
+                marginLeft={6}
+              >
+                {errors.description?.message}
+              </Text>
+            )}
           </div>
         </form>
       )}

@@ -21,11 +21,11 @@ const CoursesPage: NextPage<Props> = ({ userCourses }) => {
   return (
     <DashboardLayout title="Teacher - Courses" pageDescription="">
       <div className="px-6 pb-16">
-        <Heading marginBottom={16} level={3}>
-          My courses
-        </Heading>
-        <div className="flex justify-end mb-6">
-          <Link href="/teacher/create">
+        <div className="flex justify-start gap-3 mb-6">
+          <Heading alignSelf={"baseline"} marginBottom={0} level={3}>
+            My courses
+          </Heading>
+          <Link className="flex self-baseline" href="/teacher/create">
             <Button variation="link" size="small">
               <PlusCircle className="h-4 w-4 mr-2" />
               New Course

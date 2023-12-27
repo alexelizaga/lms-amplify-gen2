@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { Pencil, Save, X } from "lucide-react";
 import {
   Button,
-  Flex,
+  Text,
   TextAreaField,
   View,
   useTheme,
@@ -41,8 +41,11 @@ export const DescriptionForm = ({ initialData }: DescriptionFormProps) => {
     },
   });
 
-  const { register } = form;
-  const { isSubmitting, isValid, errors } = form.formState;
+  const {
+    register,
+    setValue,
+    formState: { isSubmitting, isValid, errors },
+  } = form;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -83,22 +86,19 @@ export const DescriptionForm = ({ initialData }: DescriptionFormProps) => {
       )}
       {isEditing && (
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
-          <Flex direction="column" gap="small">
-            <TextAreaField
-              labelHidden
-              label=""
-              id="description"
-              hasError={!!errors.description}
-              disabled={isSubmitting}
-              placeholder="e.g. 'This course is about...'"
-              {...register("description")}
-            />
-            {errors.description?.message && (
-              <p className="text-sm text-red-800">
-                {errors.description?.message}
-              </p>
-            )}
-          </Flex>
+          <TextAreaField
+            labelHidden
+            label=""
+            isDisabled={isSubmitting}
+            placeholder="e.g. 'This course is about...'"
+            {...register("description")}
+            onChange={({ target: { value } }) => {
+              setValue("description", value, {
+                shouldValidate: true,
+                shouldTouch: true,
+              });
+            }}
+          />
           <div className="flex items-center gap-x-2">
             <Button
               type="submit"
@@ -110,6 +110,17 @@ export const DescriptionForm = ({ initialData }: DescriptionFormProps) => {
               <Save className="h-4 w-4 mr-2" />
               Save
             </Button>
+            {errors.description && (
+              <Text
+                variation="warning"
+                as="p"
+                isTruncated
+                fontSize="0.9em"
+                marginLeft={6}
+              >
+                {errors.description.message}
+              </Text>
+            )}
           </div>
         </form>
       )}

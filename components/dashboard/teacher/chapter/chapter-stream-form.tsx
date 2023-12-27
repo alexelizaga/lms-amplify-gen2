@@ -19,6 +19,7 @@ import {
   Flex,
   Grid,
   Input,
+  Text,
   View,
   useTheme,
 } from "@aws-amplify/ui-react";
@@ -32,14 +33,17 @@ interface ChapterYoutubeFormProps {
 }
 
 const timeRegex = /^([01]\d|2[0-3]):([0-5]\d):([0-5]\d)$/;
+const isTime = (value: string) => timeRegex.test(value);
 
 const formSchema = z.object({
-  streamUrl: z.string().min(1),
-  streamStartTime: z.string().regex(timeRegex, {
-    message: "HH:mm:ss",
+  streamUrl: z.string().min(1, {
+    message: "Url is required",
   }),
-  streamEndTime: z.string().regex(timeRegex, {
-    message: "HH:mm:ss",
+  streamStartTime: z.string().refine((value) => isTime(value), {
+    message: "Invalid start time",
+  }),
+  streamEndTime: z.string().refine((value) => isTime(value), {
+    message: "Invalid end time",
   }),
 });
 
@@ -59,8 +63,11 @@ export const ChapterStreamForm = ({ initialData }: ChapterYoutubeFormProps) => {
     },
   });
 
-  const { register } = form;
-  const { isSubmitting, isValid, errors } = form.formState;
+  const {
+    register,
+    setValue,
+    formState: { isSubmitting, isValid, errors },
+  } = form;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -110,20 +117,17 @@ export const ChapterStreamForm = ({ initialData }: ChapterYoutubeFormProps) => {
       )}
       {isEditing && (
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
-          <Flex direction="column" gap="small">
-            <Input
-              id="streamUrl"
-              hasError={!!errors.streamUrl}
-              disabled={isSubmitting}
-              placeholder="e.g. 'https://www.youtube.com/watch?v=...'"
-              {...register("streamUrl")}
-            />
-            {errors.streamUrl?.message && (
-              <p className="text-sm text-red-800">
-                {errors.streamUrl?.message}
-              </p>
-            )}
-          </Flex>
+          <Input
+            isDisabled={isSubmitting}
+            placeholder="e.g. 'https://www.youtube.com/watch?v=...'"
+            {...register("streamUrl")}
+            onChange={({ target: { value } }) => {
+              setValue("streamUrl", value, {
+                shouldValidate: true,
+                shouldTouch: true,
+              });
+            }}
+          />
           <Grid templateColumns="1fr 1fr" gap={tokens.space.medium}>
             <div className="flex items-center">
               <Timer className="h-6 w-6" />
@@ -131,18 +135,16 @@ export const ChapterStreamForm = ({ initialData }: ChapterYoutubeFormProps) => {
                 <Input
                   variation="quiet"
                   size="small"
-                  id="streamStartTime"
-                  type="text"
-                  hasError={!!errors.streamStartTime}
-                  disabled={isSubmitting}
+                  isDisabled={isSubmitting}
                   placeholder="hh:mm:ss"
                   {...register("streamStartTime")}
+                  onChange={({ target: { value } }) => {
+                    setValue("streamStartTime", value, {
+                      shouldValidate: true,
+                      shouldTouch: true,
+                    });
+                  }}
                 />
-                {errors.streamStartTime?.message && (
-                  <p className="text-sm text-red-800">
-                    {errors.streamStartTime?.message}
-                  </p>
-                )}
               </div>
             </div>
             <div className="flex items-center">
@@ -151,22 +153,20 @@ export const ChapterStreamForm = ({ initialData }: ChapterYoutubeFormProps) => {
                 <Input
                   variation="quiet"
                   size="small"
-                  id="streamEndTime"
-                  type="text"
-                  hasError={!!errors.streamEndTime}
-                  disabled={isSubmitting}
+                  isDisabled={isSubmitting}
                   placeholder="hh:mm:ss"
                   {...register("streamEndTime")}
+                  onChange={({ target: { value } }) => {
+                    setValue("streamEndTime", value, {
+                      shouldValidate: true,
+                      shouldTouch: true,
+                    });
+                  }}
                 />
-                {errors.streamEndTime?.message && (
-                  <p className="text-sm text-red-800">
-                    {errors.streamEndTime?.message}
-                  </p>
-                )}
               </div>
             </div>
           </Grid>
-          <div className="flex items-center gap-x-2">
+          <Flex direction="row" alignItems="flex-start" rowGap={10}>
             <Button
               type="submit"
               variation="primary"
@@ -176,7 +176,20 @@ export const ChapterStreamForm = ({ initialData }: ChapterYoutubeFormProps) => {
               <Save className="h-4 w-4 mr-2" />
               Save
             </Button>
-          </div>
+            <div>
+              {errors.streamUrl && (
+                <Text variation="warning" as="p" fontSize="0.9em">
+                  {errors.streamUrl?.message}
+                </Text>
+              )}
+              {(errors.streamStartTime || errors.streamEndTime) && (
+                <Text variation="warning" as="p" fontSize="0.9em">
+                  {errors.streamStartTime?.message ||
+                    errors.streamEndTime?.message}
+                </Text>
+              )}
+            </div>
+          </Flex>
         </form>
       )}
     </View>
