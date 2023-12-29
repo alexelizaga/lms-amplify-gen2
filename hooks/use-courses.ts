@@ -1,4 +1,5 @@
-import useSWR from "swr";
+import { useQuery } from "react-query";
+import { useQueryClient } from "react-query";
 import { generateClient } from "aws-amplify/api";
 
 import { Schema } from "@/amplify/data/resource";
@@ -8,18 +9,23 @@ import { useCategories, useChapters, useUserProgress } from "./";
 const client = generateClient<Schema>();
 
 export const useCourses = (query?: {}) => {
+  const queryClient = useQueryClient();
+  const key = query ? JSON.stringify(query) : `/api/courses`;
+
   const fetcher = () =>
     client.models.Course.list(query).then((res) => res.data);
 
-  const { data, error, isLoading } = useSWR(
-    query ? JSON.stringify(query) : `/api/courses`,
-    fetcher
-  );
+  const { data, isLoading, isError } = useQuery(key, fetcher);
+
+  const handleRefresh = () => {
+    queryClient.invalidateQueries(key);
+  };
 
   return {
     courses: data,
     isLoading,
-    isError: error,
+    isError,
+    handleRefresh,
   };
 };
 
@@ -32,7 +38,7 @@ export const useCoursesWithProgress = ({
   categoryId?: string;
   title?: string;
 }) => {
-  const { courses } = useCourses({
+  const { courses, handleRefresh: refreshCourses } = useCourses({
     filter: {
       and: [
         { isPublished: { eq: "true" } },
@@ -42,15 +48,16 @@ export const useCoursesWithProgress = ({
     },
   });
 
-  const { progress: userProgress } = useUserProgress({
-    filter: {
-      and: [{ userId: { eq: userId } }],
-    },
-  });
+  const { progress: userProgress, handleRefresh: refreshProgress } =
+    useUserProgress({
+      filter: {
+        and: [{ userId: { eq: userId } }],
+      },
+    });
 
-  const { chapters } = useChapters();
+  const { chapters, handleRefresh: refreshChapters } = useChapters();
 
-  const { categories } = useCategories();
+  const { categories, handleRefresh: refreshCategories } = useCategories();
 
   const getCategory = (categoryId: string | undefined): string => {
     if (!categoryId) return "";
@@ -81,5 +88,9 @@ export const useCoursesWithProgress = ({
 
   return {
     courses: coursesWithProgress,
+    refreshCourses,
+    refreshProgress,
+    refreshChapters,
+    refreshCategories,
   };
 };
