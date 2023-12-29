@@ -5,16 +5,18 @@ import { CourseNavbar, CourseSidebar } from "@/components";
 import { ChapterValues, CourseValues } from "@/types";
 
 type Props = {
+  isLoading?: boolean;
   children: JSX.Element | JSX.Element[];
   title: string;
   pageDescription: string;
   imageFullUrl?: string;
-  course: CourseValues;
+  course?: CourseValues;
   progressCount: number;
-  chapters: (ChapterValues & { isCompleted: boolean })[];
+  chapters?: (ChapterValues & { isCompleted: boolean })[];
 };
 
 export const CourseLayout: React.FC<Props> = ({
+  isLoading = false,
   children,
   title,
   pageDescription,
@@ -46,6 +48,7 @@ export const CourseLayout: React.FC<Props> = ({
         className="h-[80px] md:pl-56 fixed inset-y-0 w-full z-10"
       >
         <CourseNavbar
+          isLoading={isLoading}
           course={course}
           progressCount={progressCount}
           chapters={chapters}
@@ -54,6 +57,7 @@ export const CourseLayout: React.FC<Props> = ({
 
       <nav className="hidden md:flex h-full w-56 flex-col fixed inset-y-0 z-10">
         <CourseSidebar
+          isLoading={isLoading}
           course={course}
           progressCount={progressCount}
           chapters={chapters}

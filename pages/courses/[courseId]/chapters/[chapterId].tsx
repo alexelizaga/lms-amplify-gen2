@@ -1,49 +1,82 @@
-import { GetServerSideProps, NextPage } from "next";
+import React from "react";
+import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { getCurrentUser } from "aws-amplify/auth/server";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Alert, Divider } from "@aws-amplify/ui-react";
 
 import {
   CourseLayout,
+  CourseNotification,
   CourseProgressButton,
   Preview,
   VideoPlayer,
 } from "@/components";
-import { ChapterValues, CourseValues, UserProgressValues } from "@/types";
+import { UserValues } from "@/types";
+import { timeDuration } from "@/utils";
 import {
-  orderByPosition,
-  reqResBasedClient,
-  runWithAmplifyServerContext,
-  timeDuration,
-} from "@/utils";
-import { useConfettiStore } from "@/hooks";
+  useChapterWithUserProgress,
+  useChaptersWithProgress,
+  useConfettiStore,
+  useCourses,
+} from "@/hooks";
 
 type Props = {
-  course: CourseValues;
-  chapters: (ChapterValues & { isCompleted: boolean })[];
-  chapter: ChapterValues & { isCompleted: boolean };
-  progressCount: number;
-  nextChapterId: string;
+  user: UserValues;
 };
 
-const ChapterIdPage: NextPage<Props> = ({
-  course,
-  chapters,
-  chapter,
-  progressCount,
-  nextChapterId = "",
-}) => {
-  const router = useRouter();
+const ChapterIdPage: NextPage<Props> = ({ user: { userId } }) => {
   const confetti = useConfettiStore();
+  const router = useRouter();
+  const { courseId = "", chapterId = "" } = router.query;
 
-  const isLocked = !chapter.isFree;
-  const completeOnEnd = !chapter?.isCompleted;
+  const { chapter, isLoading: isLoadingChapter } = useChapterWithUserProgress(
+    `${chapterId}`
+  );
+  const { courses, isLoading: isLoadingCourses } = useCourses({
+    filter: {
+      and: [{ courseId: { eq: courseId } }],
+    },
+  });
+  const { chapters, isLoading: isLoadingChapters } = useChaptersWithProgress(
+    `${courseId}`,
+    userId,
+    {
+      filter: {
+        and: [
+          { courseChaptersCourseId: { eq: courseId } },
+          { isPublished: { eq: "true" } },
+        ],
+      },
+    }
+  );
+  const isLoading = React.useMemo(
+    () => isLoadingChapter || isLoadingCourses || isLoadingChapters,
+    [isLoadingChapter, isLoadingChapters, isLoadingCourses]
+  );
+
+  const course = React.useMemo(
+    () => (courses?.length ? courses[0] : undefined),
+    [courses]
+  );
+  const isLocked = React.useMemo(() => !chapter?.isFree, [chapter?.isFree]);
+  const completedChapters = React.useMemo(
+    () => chapters?.filter((chapter) => chapter.isCompleted).length ?? 0,
+    [chapters]
+  );
+  const numberChapters = React.useMemo(
+    () => chapters?.length ?? 0,
+    [chapters?.length]
+  );
+  const nextChapterId = chapters?.find(
+    (chapter) => chapter.position === chapter?.position! + 1
+  )?.id;
+
+  const progressCount = (completedChapters / numberChapters) * 100;
 
   const onEnded = async () => {
     try {
-      if (completeOnEnd) {
+      if (course && chapter?.isCompleted) {
         confetti.onOpen();
         await axios.put(
           `/api/courses/${course.courseId}/chapters/${chapter.id}/progress`,
@@ -65,229 +98,56 @@ const ChapterIdPage: NextPage<Props> = ({
 
   return (
     <CourseLayout
-      title={chapter.title}
+      isLoading={isLoading}
+      title={chapter.title ?? ""}
       pageDescription={chapter.description ?? ""}
       course={course}
       progressCount={progressCount}
       chapters={chapters}
     >
-      <div className="p-4 flex flex-col max-w-4xl mx-auto">
-        {chapter.isCompleted ? (
-          <div className="rounded-md overflow-hidden">
-            <Alert
-              variation="success"
-              isDismissible={false}
-              hasIcon={true}
-              heading=""
-            >
-              You already completed this chapter.
-            </Alert>
-          </div>
-        ) : (
-          <></>
-        )}
-        {isLocked ? (
-          <div className="rounded-md overflow-hidden">
-            <Alert
-              variation="warning"
-              isDismissible={false}
-              hasIcon={true}
-              heading=""
-            >
-              You need to purchase this course to see this chapter.
-            </Alert>
-          </div>
-        ) : (
-          <></>
-        )}
-      </div>
+      <CourseNotification
+        isVisible={!isLoading}
+        isCompleted={chapter.isCompleted || false}
+        isLocked={isLocked}
+      />
       <div className="p-4 flex flex-col gap-16 max-w-4xl mx-auto">
-        {chapter.streamUrl && (
-          <div className="shadow-2xl shadow-black rounded-md overflow-hidden drop-shadow-sm">
-            <VideoPlayer
-              url={chapter?.streamUrl ?? ""}
-              start={timeDuration(chapter.streamStartTime ?? "00:00:00")}
-              end={timeDuration(chapter.streamEndTime ?? "00:00:00")}
-              isLocked={isLocked}
-              onEnded={onEnded}
-            />
-          </div>
-        )}
+        <div className="shadow-2xl shadow-black rounded-md overflow-hidden drop-shadow-sm bg-black">
+          <VideoPlayer
+            url={chapter?.streamUrl ?? ""}
+            start={timeDuration(chapter.streamStartTime ?? "00:00:00")}
+            end={timeDuration(chapter.streamEndTime ?? "00:00:00")}
+            isLocked={isLocked}
+            onEnded={onEnded}
+            isLoading={isLoading}
+          />
+        </div>
         <div>
           <div className="flex flex-col md:flex-row items-center justify-between">
-            <h2 className="text-2xl font-semibold mb-2">{chapter.title}</h2>
+            <h2 className="text-2xl font-semibold">
+              {isLoading ? "Loading..." : chapter.title}
+            </h2>
             {
               <CourseProgressButton
-                chapterId={chapter.id}
-                courseId={course.courseId}
+                isLoading={isLoading}
+                chapterId={chapter.id ?? ""}
+                courseId={course?.courseId ?? ""}
                 nextChapterId={nextChapterId}
                 isCompleted={!!chapter?.isCompleted}
               />
             }
           </div>
-          <div className="mt-4 mb-8">
-            <Divider orientation="horizontal" size="small" />
-          </div>
-          <Preview value={chapter.description!} />
+          {chapter.description !== "<p><br></p>" && (
+            <>
+              <div className="mt-4 mb-8">
+                <Divider orientation="horizontal" size="small" />
+              </div>
+              <Preview value={chapter.description!} />
+            </>
+          )}
         </div>
       </div>
     </CourseLayout>
   );
-};
-
-export const getServerSideProps: GetServerSideProps = async ({
-  params,
-  req,
-  res,
-}) => {
-  const { chapterId = "", courseId = "" } = params as {
-    courseId: string;
-    chapterId: string;
-  };
-
-  try {
-    const { userId } = await runWithAmplifyServerContext({
-      nextServerContext: { request: req, response: res },
-      operation: (contextSpec) => getCurrentUser(contextSpec),
-    });
-
-    if (!userId) {
-      return {
-        redirect: {
-          destination: "/",
-          permanent: false,
-        },
-      };
-    }
-
-    const course = await runWithAmplifyServerContext({
-      nextServerContext: { request: req, response: res },
-      operation: async (contextSpec) => {
-        const { data: course } = await reqResBasedClient.models.Course.list(
-          contextSpec,
-          {
-            filter: {
-              and: [{ courseId: { eq: courseId } }],
-            },
-          }
-        );
-        if (!course.length) return undefined;
-        return JSON.parse(JSON.stringify(course[0]));
-      },
-    });
-
-    if (!course) {
-      return {
-        redirect: {
-          destination: "/",
-          permanent: false,
-        },
-      };
-    }
-
-    const chapters: ChapterValues[] = await runWithAmplifyServerContext({
-      nextServerContext: { request: req, response: res },
-      operation: async (contextSpec) => {
-        const { data: chapters } = await reqResBasedClient.models.Chapter.list(
-          contextSpec,
-          {
-            filter: {
-              and: [
-                { courseChaptersCourseId: { eq: courseId } },
-                { isPublished: { eq: "true" } },
-              ],
-            },
-          }
-        );
-        return JSON.parse(JSON.stringify(chapters.sort(orderByPosition)));
-      },
-    });
-
-    if (!chapters) {
-      return {
-        redirect: {
-          destination: "/",
-          permanent: false,
-        },
-      };
-    }
-
-    const userProgress: UserProgressValues[] =
-      await runWithAmplifyServerContext({
-        nextServerContext: { request: req, response: res },
-        operation: async (contextSpec) => {
-          const { data: usersProgress } =
-            await reqResBasedClient.models.UserProgress.list(contextSpec, {
-              filter: {
-                and: [
-                  { courseId: { eq: courseId } },
-                  { userId: { eq: userId } },
-                ],
-              },
-            });
-          return JSON.parse(JSON.stringify(usersProgress));
-        },
-      });
-
-    const isChapterCompleted = (chapterId: string): boolean => {
-      return !!userProgress.find(
-        (progress) => progress.chapterId === chapterId && progress.isCompleted
-      );
-    };
-
-    const chaptersWithUserProgress: (ChapterValues & {
-      isCompleted: boolean;
-    })[] = chapters.map((chapter) => ({
-      ...chapter,
-      streamUrl: chapter.isFree ? chapter.streamUrl : "",
-      streamStartTime: chapter.isFree ? chapter.streamStartTime : "",
-      streamEndTime: chapter.isFree ? chapter.streamEndTime : "",
-      isCompleted: isChapterCompleted(chapter.id),
-    }));
-
-    const currentChapter = chaptersWithUserProgress.find(
-      (chapter) => chapter.id === chapterId
-    );
-
-    const nextChapter:
-      | (ChapterValues & {
-          isCompleted: boolean;
-        })
-      | undefined = chaptersWithUserProgress.find(
-      (chapter) => chapter.position === currentChapter?.position! + 1
-    );
-
-    if (!currentChapter) {
-      return {
-        redirect: {
-          destination: "/",
-          permanent: false,
-        },
-      };
-    }
-
-    const completedChapters = chaptersWithUserProgress.filter(
-      (chapter) => chapter.isCompleted
-    );
-    const progressCount = (completedChapters.length / chapters.length) * 100;
-
-    return {
-      props: {
-        course,
-        chapters: chaptersWithUserProgress,
-        chapter: currentChapter,
-        progressCount,
-        nextChapterId: nextChapter?.id ?? "",
-      },
-    };
-  } catch (error) {
-    return {
-      redirect: {
-        destination: `/`,
-        permanent: false,
-      },
-    };
-  }
 };
 
 export default ChapterIdPage;

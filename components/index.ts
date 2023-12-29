@@ -7,6 +7,7 @@ export * from "./tables";
 
 export { ColorModeButton } from "./color-mode-button";
 export { Combobox } from "./combo-box";
+export { CourseNotification } from "./course-notification";
 export { CourseProgress } from "./course-progress";
 export { CoursesList } from "./courses-list";
 export { Editor } from "./editor";

@@ -8,6 +8,7 @@ import { CheckCircle, XCircle } from "lucide-react";
 import { useConfettiStore } from "@/hooks";
 
 interface CourseProgressButtonProps {
+  isLoading?: boolean;
   chapterId: string;
   courseId: string;
   isCompleted?: boolean;
@@ -15,6 +16,7 @@ interface CourseProgressButtonProps {
 }
 
 export const CourseProgressButton = ({
+  isLoading = false,
   chapterId,
   courseId,
   isCompleted,
@@ -22,11 +24,12 @@ export const CourseProgressButton = ({
 }: CourseProgressButtonProps) => {
   const router = useRouter();
   const confetti = useConfettiStore();
-  const [isLoading, setIsLoading] = useState(false);
+
+  const [isSummiting, setIsSummiting] = useState(false);
 
   const onClick = async () => {
     try {
-      setIsLoading(true);
+      setIsSummiting(true);
 
       await axios.put(
         `/api/courses/${courseId}/chapters/${chapterId}/progress`,
@@ -49,20 +52,21 @@ export const CourseProgressButton = ({
     } catch {
       toast.error("Something went wrong");
     } finally {
-      setIsLoading(false);
+      setIsSummiting(false);
     }
   };
 
   const Icon = isCompleted ? XCircle : CheckCircle;
   return (
     <Button
-      onClick={onClick}
-      disabled={isLoading}
+      isLoading={isLoading}
+      disabled={isSummiting}
       type="button"
       variation={isCompleted ? undefined : "primary"}
       colorTheme={isCompleted ? undefined : "success"}
-      className="w-full md:w-auto"
       size="small"
+      width={180}
+      onClick={onClick}
     >
       {isCompleted ? "Not completed" : "Mark as complete"}
       <Icon className="h-4 w-4 ml-2" />

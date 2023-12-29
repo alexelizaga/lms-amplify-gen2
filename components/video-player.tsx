@@ -4,12 +4,14 @@ import { OnProgressProps } from "react-player/base";
 import screenfull from "screenfull";
 import { Lock } from "lucide-react";
 import qs from "query-string";
+import { Loader } from "@aws-amplify/ui-react";
 
 import { cn } from "@/utils";
 
 import { VideoControls } from "./video-controls";
 
 interface VideoPlayerProps {
+  isLoading?: boolean;
   url: string;
   start: number;
   end: number;
@@ -21,6 +23,7 @@ interface VideoPlayerProps {
 }
 
 export const VideoPlayer = ({
+  isLoading = false,
   url,
   start,
   end,
@@ -95,18 +98,25 @@ export const VideoPlayer = ({
 
   React.useEffect(() => {
     if (!isReady) return;
+    setPlayed(start);
     videoRef.current?.seekTo(start);
   }, [isReady, start]);
 
   return (
     <>
-      {isLocked && (
-        <div className="aspect-video flex items-center justify-center bg-slate-800 flex-col gap-y-2 text-white/80">
+      {isLoading && (
+        <div className="aspect-video flex items-center justify-center bg-black flex-col gap-y-2 text-white/80">
+          <Loader size="large" />
+          <p className="text-sm">Loading</p>
+        </div>
+      )}
+      {!isLoading && isLocked && (
+        <div className="aspect-video flex items-center justify-center bg-black flex-col gap-y-2 text-white/80">
           <Lock className="h-8 w-8" />
           <p className="text-sm">This chapter is locked</p>
         </div>
       )}
-      {!isLocked && (
+      {!isLoading && !isLocked && (
         <div className="relative react-player rounded-md overflow-hidden">
           <div className="aspect-video">
             <ReactPlayer

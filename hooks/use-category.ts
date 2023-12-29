@@ -6,21 +6,23 @@ import { Schema } from "@/amplify/data/resource";
 
 const client = generateClient<Schema>();
 
-export const useCategories = (query?: {}) => {
+export const useCategory = (id: string) => {
   const queryClient = useQueryClient();
-  const key = query ? JSON.stringify(query) : `/api/categories`;
+  const key = `/api/category/${id}`;
 
   const fetcher = () =>
-    client.models.Category.list(query).then((res) => res.data);
+    client.models.Category.get({
+      id,
+    }).then((res) => res.data);
 
-  const { data, isLoading, isError } = useQuery(key, fetcher);
+  const { data, isLoading, isError } = useQuery(`/api/category/${id}`, fetcher);
 
   const handleRefresh = () => {
     queryClient.invalidateQueries(key);
   };
 
   return {
-    categories: data,
+    category: data,
     isLoading,
     isError,
     handleRefresh,

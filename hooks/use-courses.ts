@@ -55,7 +55,11 @@ export const useCoursesWithProgress = ({
       },
     });
 
-  const { chapters, handleRefresh: refreshChapters } = useChapters();
+  const { chapters, handleRefresh: refreshChapters } = useChapters({
+    filter: {
+      and: [{ isPublished: { eq: "true" } }],
+    },
+  });
 
   const { categories, handleRefresh: refreshCategories } = useCategories();
 

@@ -5,12 +5,14 @@ import { ChapterValues, CourseValues } from "@/types";
 import { CourseSidebar } from "@/components";
 
 interface CourseMobileSidebarProps {
-  course: CourseValues;
+  isLoading?: boolean;
+  course?: CourseValues;
   progressCount: number;
   chapters: (ChapterValues & { isCompleted: boolean })[];
 }
 
 export const CourseMobileSidebar = ({
+  isLoading = false,
   course,
   progressCount = 0,
   chapters = [],
@@ -26,6 +28,7 @@ export const CourseMobileSidebar = ({
         overflow="hidden"
       >
         <CourseSidebar
+          isLoading={isLoading}
           course={course}
           chapters={chapters}
           progressCount={progressCount}

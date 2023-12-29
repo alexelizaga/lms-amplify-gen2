@@ -61,7 +61,10 @@ export const getServerSideProps: GetServerSideProps = async ({
           contextSpec,
           {
             filter: {
-              and: [{ courseId: { eq: courseId } }, { userId: { eq: userId } }],
+              and: [
+                { courseId: { eq: courseId } },
+                { isPublished: { eq: "true" } },
+              ],
             },
           }
         );
@@ -86,7 +89,10 @@ export const getServerSideProps: GetServerSideProps = async ({
           contextSpec,
           {
             filter: {
-              and: [{ courseChaptersCourseId: { eq: courseId } }],
+              and: [
+                { courseChaptersCourseId: { eq: courseId } },
+                { isPublished: { eq: "true" } },
+              ],
             },
           }
         );
