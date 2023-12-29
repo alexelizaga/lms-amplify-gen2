@@ -111,7 +111,7 @@ const ChapterIdPage: NextPage<Props> = ({ user: { userId } }) => {
         isLocked={isLocked}
       />
       <div className="p-4 flex flex-col gap-16 max-w-4xl mx-auto">
-        <div className="shadow-2xl shadow-black rounded-md overflow-hidden drop-shadow-sm bg-black">
+        <div className="shadow-2xl shadow-black rounded-md">
           <VideoPlayer
             url={chapter?.streamUrl ?? ""}
             start={timeDuration(chapter.streamStartTime ?? "00:00:00")}

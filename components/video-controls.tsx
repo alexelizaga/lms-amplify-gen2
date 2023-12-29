@@ -5,6 +5,7 @@ import { MdFullscreen, MdFullscreenExit } from "react-icons/md";
 import { formatTime } from "@/utils";
 
 interface VideoControlsProps {
+  isLoading?: boolean;
   isPlaying: boolean;
   onPlaying: () => void;
   volume: number;
@@ -21,6 +22,7 @@ interface VideoControlsProps {
 }
 
 export const VideoControls = ({
+  isLoading = false,
   isPlaying,
   onPlaying,
   volume,
@@ -50,6 +52,8 @@ export const VideoControls = ({
 
   const PlayIcon = isPlaying ? BsPauseFill : BsFillPlayFill;
   const FullscreenIcon = isFullscreen ? MdFullscreenExit : MdFullscreen;
+
+  if (isLoading) return <div className="w-full h-[29px] bg-black"></div>;
 
   return (
     <div className="left-0 w-full py-1 px-2 flex items-center bg-black">
