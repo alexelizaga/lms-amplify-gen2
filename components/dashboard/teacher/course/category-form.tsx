@@ -107,6 +107,7 @@ export const CategoryForm = ({ initialData, options }: CategoryFormProps) => {
               isDisabled={!isValid}
               isLoading={isSubmitting}
               width={85}
+              height={35}
             >
               <Save className="h-4 w-4 mr-2" />
               Save

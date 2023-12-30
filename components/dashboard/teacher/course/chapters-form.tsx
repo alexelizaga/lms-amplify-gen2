@@ -133,6 +133,7 @@ export const ChaptersForm = ({ initialData }: ChaptersFormProps) => {
               isDisabled={!isValid}
               isLoading={isSubmitting}
               width={85}
+              height={35}
             >
               <FilePlus2 className="h-4 w-4 mr-2" />
               Create
