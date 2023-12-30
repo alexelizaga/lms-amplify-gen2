@@ -67,6 +67,7 @@ export const VideoControls = ({
           </span>
           <div className="relative w-full h-1.5 bg-gray-600 rounded-full mr-3">
             <input
+              id="progress"
               type="range"
               className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
               min={0}
