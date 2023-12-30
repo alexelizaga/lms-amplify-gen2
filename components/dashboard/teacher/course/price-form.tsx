@@ -6,7 +6,7 @@ import { useForm } from "react-hook-form";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { Pencil, Save, X } from "lucide-react";
-import { Button, Flex, Input, View, useTheme } from "@aws-amplify/ui-react";
+import { Button, Input, Text, View, useTheme } from "@aws-amplify/ui-react";
 
 import { cn } from "@/utils/cn";
 import { formatPrice } from "@/utils/format";
@@ -17,7 +17,9 @@ interface PriceFormProps {
 }
 
 const formSchema = z.object({
-  price: z.coerce.number(),
+  price: z.coerce.number().min(0, {
+    message: "Price is not valid",
+  }),
 });
 
 export const PriceForm = ({ initialData }: PriceFormProps) => {
@@ -34,8 +36,11 @@ export const PriceForm = ({ initialData }: PriceFormProps) => {
     },
   });
 
-  const { register } = form;
-  const { isSubmitting, isValid, errors } = form.formState;
+  const {
+    register,
+    setValue,
+    formState: { isSubmitting, isValid, errors },
+  } = form;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -78,20 +83,20 @@ export const PriceForm = ({ initialData }: PriceFormProps) => {
       )}
       {isEditing && (
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
-          <Flex direction="column" gap="small">
-            <Input
-              id="price"
-              type="number"
-              step={0.01}
-              hasError={!!errors.price}
-              disabled={isSubmitting}
-              placeholder="Set a price for your course"
-              {...register("price")}
-            />
-            {errors.price?.message && (
-              <p className="text-sm text-red-800">{errors.price?.message}</p>
-            )}
-          </Flex>
+          <Input
+            type="number"
+            step={0.01}
+            min={0}
+            isDisabled={isSubmitting}
+            placeholder="Set a price for your course"
+            {...register("price")}
+            onChange={({ target: { value } }) => {
+              setValue("price", +value, {
+                shouldValidate: true,
+                shouldTouch: true,
+              });
+            }}
+          />
           <div className="flex items-center gap-x-2">
             <Button
               type="submit"
@@ -99,10 +104,23 @@ export const PriceForm = ({ initialData }: PriceFormProps) => {
               size="small"
               isDisabled={!isValid}
               isLoading={isSubmitting}
+              width={85}
+              height={35}
             >
               <Save className="h-4 w-4 mr-2" />
               Save
             </Button>
+            {errors.price && (
+              <Text
+                variation="warning"
+                as="p"
+                isTruncated
+                fontSize="0.9em"
+                marginLeft={6}
+              >
+                {errors.price.message}
+              </Text>
+            )}
           </div>
         </form>
       )}

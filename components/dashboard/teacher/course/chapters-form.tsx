@@ -4,7 +4,7 @@ import axios from "axios";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { Button, Flex, Input, View, useTheme } from "@aws-amplify/ui-react";
+import { Button, Input, Text, View, useTheme } from "@aws-amplify/ui-react";
 import toast from "react-hot-toast";
 import { FilePlus2, Loader2, Plus, X } from "lucide-react";
 
@@ -18,7 +18,9 @@ interface ChaptersFormProps {
 }
 
 const formSchema = z.object({
-  title: z.string().min(1),
+  title: z.string().min(1, {
+    message: "Chapter title is required",
+  }),
 });
 
 export const ChaptersForm = ({ initialData }: ChaptersFormProps) => {
@@ -49,8 +51,11 @@ export const ChaptersForm = ({ initialData }: ChaptersFormProps) => {
     },
   });
 
-  const { register } = form;
-  const { isSubmitting, isValid, errors } = form.formState;
+  const {
+    register,
+    setValue,
+    formState: { isSubmitting, isValid, errors },
+  } = form;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -109,29 +114,42 @@ export const ChaptersForm = ({ initialData }: ChaptersFormProps) => {
       </div>
       {isCreating && (
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
-          <Flex direction="column" gap="small">
-            <Input
-              id="title"
-              hasError={!!errors.title}
-              disabled={isSubmitting}
-              placeholder="e.g. 'Introduction to the course'"
-              {...register("title")}
-            />
-            {errors.title?.message && (
-              <p className="text-sm text-red-800">{errors.title?.message}</p>
+          <Input
+            isDisabled={isSubmitting}
+            placeholder="e.g. 'Introduction to the course'"
+            {...register("title")}
+            onChange={({ target: { value } }) => {
+              setValue("title", value, {
+                shouldValidate: true,
+                shouldTouch: true,
+              });
+            }}
+          />
+          <div className="flex items-center gap-x-2">
+            <Button
+              type="submit"
+              variation="primary"
+              size="small"
+              isDisabled={!isValid}
+              isLoading={isSubmitting}
+              width={85}
+              height={35}
+            >
+              <FilePlus2 className="h-4 w-4 mr-2" />
+              Create
+            </Button>
+            {errors.title && (
+              <Text
+                variation="warning"
+                as="p"
+                isTruncated
+                fontSize="0.9em"
+                marginLeft={6}
+              >
+                {errors.title.message}
+              </Text>
             )}
-          </Flex>
-
-          <Button
-            type="submit"
-            variation="primary"
-            size="small"
-            isDisabled={!isValid}
-            isLoading={isSubmitting}
-          >
-            <FilePlus2 className="h-4 w-4 mr-2" />
-            Create
-          </Button>
+          </div>
         </form>
       )}
       {!isCreating && (

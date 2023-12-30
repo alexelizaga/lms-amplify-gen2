@@ -5,6 +5,7 @@ import { MdFullscreen, MdFullscreenExit } from "react-icons/md";
 import { formatTime } from "@/utils";
 
 interface VideoControlsProps {
+  isLoading?: boolean;
   isPlaying: boolean;
   onPlaying: () => void;
   volume: number;
@@ -21,6 +22,7 @@ interface VideoControlsProps {
 }
 
 export const VideoControls = ({
+  isLoading = false,
   isPlaying,
   onPlaying,
   volume,
@@ -51,6 +53,8 @@ export const VideoControls = ({
   const PlayIcon = isPlaying ? BsPauseFill : BsFillPlayFill;
   const FullscreenIcon = isFullscreen ? MdFullscreenExit : MdFullscreen;
 
+  if (isLoading) return <div className="w-full h-[29px] bg-black"></div>;
+
   return (
     <div className="left-0 w-full py-1 px-2 flex items-center bg-black">
       <div className="flex items-center justify-between gap-5 w-full">
@@ -63,6 +67,8 @@ export const VideoControls = ({
           </span>
           <div className="relative w-full h-1.5 bg-gray-600 rounded-full mr-3">
             <input
+              id="progress"
+              name="progress"
               type="range"
               className="absolute top-0 left-0 w-full h-full opacity-0 cursor-pointer"
               min={0}

@@ -2,14 +2,16 @@ import React from "react";
 import ReactPlayer from "react-player/lazy";
 import { OnProgressProps } from "react-player/base";
 import screenfull from "screenfull";
-import { Lock } from "lucide-react";
+import { Lock, Play } from "lucide-react";
 import qs from "query-string";
+import { Loader } from "@aws-amplify/ui-react";
 
 import { cn } from "@/utils";
 
 import { VideoControls } from "./video-controls";
 
 interface VideoPlayerProps {
+  isLoading?: boolean;
   url: string;
   start: number;
   end: number;
@@ -21,6 +23,7 @@ interface VideoPlayerProps {
 }
 
 export const VideoPlayer = ({
+  isLoading = false,
   url,
   start,
   end,
@@ -95,67 +98,77 @@ export const VideoPlayer = ({
 
   React.useEffect(() => {
     if (!isReady) return;
+    setPlayed(start);
     videoRef.current?.seekTo(start);
   }, [isReady, start]);
 
   return (
-    <>
-      {isLocked && (
-        <div className="aspect-video flex items-center justify-center bg-slate-800 flex-col gap-y-2 text-white/80">
-          <Lock className="h-8 w-8" />
-          <p className="text-sm">This chapter is locked</p>
-        </div>
-      )}
-      {!isLocked && (
-        <div className="relative react-player rounded-md overflow-hidden">
-          <div className="aspect-video">
-            <ReactPlayer
-              ref={videoRef}
-              url={videoUrl}
-              controls={controls}
-              playing={isPlaying}
-              volume={volume}
-              loop={loop}
-              onProgress={onProgress}
-              onEnded={onEnded}
-              onPlay={() => setIsPlaying(true)}
-              onPause={() => setIsPlaying(false)}
-              playbackRate={parseFloat(playbackRate)}
-              width={"100%"}
-              height={"100%"}
-              onReady={() => setIsReady(true)}
-              onStart={() => {
-                setIsStarted(true);
-                videoRef.current?.seekTo(start);
-                setVolume(1);
-              }}
-            />
+    <div className="relative react-player rounded-md overflow-hidden">
+      <div className="aspect-video flex justify-center items-center">
+        {isLoading && (
+          <div className="flex flex-col justify-center items-center gap-3">
+            <Loader size="large" />
+            <p className="text-white">Loading</p>
           </div>
-          <button
-            className={cn(
-              "opacity-0 transition ease-in delay-100 duration-1000 bg-black absolute top-0 left-0 right-0 aspect-video",
-              !isStarted && "delay-500",
-              !isPlaying && "opacity-100 ease-out delay-0 duration-0"
-            )}
-            onClick={onPlaying}
-          ></button>
-          <VideoControls
-            isPlaying={isPlaying}
-            onPlaying={onPlaying}
+        )}
+        {!isLoading && isLocked && (
+          <div className="flex flex-col justify-center items-center gap-3 text-white">
+            <Lock className="h-9 w-9" />
+            <p>This chapter is locked</p>
+          </div>
+        )}
+        {!isLoading && !isLocked && (
+          <ReactPlayer
+            ref={videoRef}
+            url={videoUrl}
+            controls={controls}
+            playing={isPlaying}
             volume={volume}
-            onVolumeChange={onVolumeChange}
-            playbackRate={playbackRate}
-            onPlaybackRateChange={onPlaybackRateChange}
-            isFullscreen={isFullscreen}
-            onFullscreen={onFullscreen}
-            start={start}
-            end={end}
-            onSeekChange={onSeekChange}
-            onSeekMouseUp={onSeekMouseUp}
-            played={played}
+            loop={loop}
+            onProgress={onProgress}
+            onEnded={onEnded}
+            onPlay={() => setIsPlaying(true)}
+            onPause={() => setIsPlaying(false)}
+            playbackRate={parseFloat(playbackRate)}
+            width={"100%"}
+            height={"100%"}
+            onReady={() => setIsReady(true)}
+            onStart={() => {
+              setIsStarted(true);
+              videoRef.current?.seekTo(start);
+              setVolume(1);
+            }}
           />
+        )}
+      </div>
+      <button
+        className={cn(
+          "opacity-0 transition ease-in delay-100 duration-1000 bg-black absolute top-0 left-0 right-0 aspect-video",
+          !isStarted && "delay-500",
+          !isPlaying && "opacity-100 ease-out delay-0 duration-0"
+        )}
+        onClick={onPlaying}
+      >
+        <div className="flex flex-col justify-center items-center gap-3 text-white">
+          <Play className="h-9 w-9" />
         </div>
-      )}
-    </>
+      </button>
+      <VideoControls
+        isLoading={isLoading || !isStarted}
+        isPlaying={isPlaying}
+        onPlaying={onPlaying}
+        volume={volume}
+        onVolumeChange={onVolumeChange}
+        playbackRate={playbackRate}
+        onPlaybackRateChange={onPlaybackRateChange}
+        isFullscreen={isFullscreen}
+        onFullscreen={onFullscreen}
+        start={start}
+        end={end}
+        onSeekChange={onSeekChange}
+        onSeekMouseUp={onSeekMouseUp}
+        played={played}
+      />
+    </div>
   );
 };

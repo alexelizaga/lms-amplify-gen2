@@ -5,12 +5,14 @@ interface CourseProgressProps {
   value: number;
   variant?: "default" | "success";
   size?: "default" | "sm";
+  isLoading?: boolean;
 }
 
 export const CourseProgress = ({
   value,
   variant,
   size,
+  isLoading = false,
 }: CourseProgressProps) => {
   const isSuccess = React.useMemo(() => variant === "success", [variant]);
   const isSmall = React.useMemo(() => size === "sm", [size]);
@@ -20,14 +22,14 @@ export const CourseProgress = ({
         size="large"
         variation="linear"
         percentage={value}
-        isDeterminate
+        isDeterminate={!isLoading}
         isPercentageTextHidden
       />
       <Text
         variation={isSuccess ? "success" : "primary"}
         fontSize={isSmall ? "12px" : "14px"}
       >
-        {Math.round(value)}% Completed
+        {isLoading ? 0 : Math.round(value)}% Completed
       </Text>
     </div>
   );

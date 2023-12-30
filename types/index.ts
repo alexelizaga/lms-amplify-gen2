@@ -15,6 +15,12 @@ export type CourseValues = Pick<
   | "owner"
 >;
 
+export type CourseWithProgress = CourseValues & {
+  userProgress: number;
+  numberOfChapters: number;
+  categoryLabel: string;
+};
+
 export type CategoryValues = Pick<Schema["Category"], "id" | "icon" | "name">;
 
 export type ChapterValues = Pick<
@@ -60,3 +66,8 @@ export type UserProgressValues = Pick<
   Schema["UserProgress"],
   "chapterId" | "isCompleted" | "owner" | "courseId" | "userId"
 >;
+
+export type UserValues = {
+  userId: string;
+  username: string;
+};

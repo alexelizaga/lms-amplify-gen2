@@ -4,7 +4,7 @@ import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { Button, Flex, Input, View, useTheme } from "@aws-amplify/ui-react";
+import { Button, Input, Text, View, useTheme } from "@aws-amplify/ui-react";
 import toast from "react-hot-toast";
 import { Pencil, Save, X } from "lucide-react";
 
@@ -32,8 +32,11 @@ export const TitleForm = ({ initialData }: TitleFormProps) => {
     defaultValues: initialData,
   });
 
-  const { register } = form;
-  const { isSubmitting, isValid, errors } = form.formState;
+  const {
+    register,
+    setValue,
+    formState: { isSubmitting, isValid, errors },
+  } = form;
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
@@ -65,18 +68,17 @@ export const TitleForm = ({ initialData }: TitleFormProps) => {
       {!isEditing && <p className="text-sm mt-2">{initialData.title}</p>}
       {isEditing && (
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 mt-4">
-          <Flex direction="column" gap="small">
-            <Input
-              id="title"
-              hasError={!!errors.title}
-              disabled={isSubmitting}
-              placeholder="e.g. 'Advanced web development'"
-              {...register("title")}
-            />
-            {errors.title?.message && (
-              <p className="text-sm text-red-800">{errors.title?.message}</p>
-            )}
-          </Flex>
+          <Input
+            isDisabled={isSubmitting}
+            placeholder="e.g. 'Advanced web development'"
+            {...register("title")}
+            onChange={({ target: { value } }) => {
+              setValue("title", value, {
+                shouldValidate: true,
+                shouldTouch: true,
+              });
+            }}
+          />
           <div className="flex items-center gap-x-2">
             <Button
               type="submit"
@@ -84,10 +86,23 @@ export const TitleForm = ({ initialData }: TitleFormProps) => {
               size="small"
               isDisabled={!isValid}
               isLoading={isSubmitting}
+              width={85}
+              height={35}
             >
               <Save className="h-4 w-4 mr-2" />
               Save
             </Button>
+            {errors.title && (
+              <Text
+                variation="warning"
+                as="p"
+                isTruncated
+                fontSize="0.9em"
+                marginLeft={6}
+              >
+                {errors.title.message}
+              </Text>
+            )}
           </div>
         </form>
       )}

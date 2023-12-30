@@ -4,9 +4,11 @@ export * from "./dashboard";
 export * from "./layout";
 export * from "./search";
 export * from "./tables";
+export * from "./views";
 
 export { ColorModeButton } from "./color-mode-button";
 export { Combobox } from "./combo-box";
+export { CourseNotification } from "./course-notification";
 export { CourseProgress } from "./course-progress";
 export { CoursesList } from "./courses-list";
 export { Editor } from "./editor";
