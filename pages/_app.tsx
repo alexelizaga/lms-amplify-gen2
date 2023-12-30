@@ -28,7 +28,7 @@ function App({
     <MyThemeProvider>
       <ToastProvider />
       <ConfettiProvider />
-      <ReactQueryProvider>
+      <ReactQueryProvider pageProps={pageProps}>
         <Component {...pageProps} user={user} />
       </ReactQueryProvider>
     </MyThemeProvider>

@@ -1,5 +1,4 @@
-import { useQuery } from "react-query";
-import { useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { generateClient } from "aws-amplify/api";
 
 import { Schema } from "@/amplify/data/resource";
@@ -10,59 +9,59 @@ const client = generateClient<Schema>();
 export const useChapter = (id: string) => {
   const queryClient = useQueryClient();
 
-  const key = `/api/chapter/${id}`;
+  const queryKey = ["chapter", { id }];
 
-  const fetcher = () =>
+  const queryFn = () =>
     client.models.Chapter.get({
       id,
     }).then((res) => res.data);
 
-  const { data, isLoading, isError } = useQuery(key, fetcher);
+  const { data, ...props } = useQuery({
+    queryKey,
+    queryFn,
+  });
 
   const handleRefresh = () => {
-    queryClient.invalidateQueries(key);
+    queryClient.invalidateQueries({ queryKey });
   };
 
   return {
     chapter: data,
-    isLoading,
-    isError,
+    ...props,
     handleRefresh,
   };
 };
 
 export const useChapterWithUserProgress = (id: string) => {
-  const { progress: userProgress } = useUserProgress({
+  const {
+    chapter,
+    isLoading: isLoadingChapter,
+    isError: isErrorChapter,
+    handleRefresh: handleRefreshChapter,
+  } = useChapter(id);
+
+  const {
+    progress: userProgress,
+    isLoading: isLoadingProgress,
+    isError: isErrorProgress,
+    handleRefresh: handleRefreshProgress,
+  } = useUserProgress({
     filter: {
       and: [{ chapterId: { eq: id } }],
     },
   });
 
-  const queryClient = useQueryClient();
-
-  const key = `/api/chapter/${id}`;
-
-  const fetcher = () =>
-    client.models.Chapter.get({
-      id,
-    }).then((res) => res.data);
-
-  const { data, isLoading, isError } = useQuery(key, fetcher);
-
-  const handleRefresh = () => {
-    queryClient.invalidateQueries(key);
-  };
-
   return {
     chapter: {
-      ...data,
-      streamUrl: data?.isFree ? data.streamUrl : "",
-      streamStartTime: data?.isFree ? data.streamStartTime : "",
-      streamEndTime: data?.isFree ? data.streamEndTime : "",
+      ...chapter,
+      streamUrl: chapter?.isFree ? chapter.streamUrl : "",
+      streamStartTime: chapter?.isFree ? chapter.streamStartTime : "",
+      streamEndTime: chapter?.isFree ? chapter.streamEndTime : "",
       isCompleted: userProgress?.length ? userProgress[0].isCompleted : false,
     },
-    isLoading,
-    isError,
-    handleRefresh,
+    isLoading: isLoadingChapter || isLoadingProgress,
+    isError: isErrorChapter || isErrorProgress,
+    handleRefreshChapter,
+    handleRefreshProgress,
   };
 };

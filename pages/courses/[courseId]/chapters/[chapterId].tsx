@@ -3,9 +3,10 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Alert, Divider } from "@aws-amplify/ui-react";
+import { Divider } from "@aws-amplify/ui-react";
 
 import {
+  ChapterView,
   CourseLayout,
   CourseNotification,
   CourseProgressButton,
@@ -14,12 +15,7 @@ import {
 } from "@/components";
 import { UserValues } from "@/types";
 import { timeDuration } from "@/utils";
-import {
-  useChapterWithUserProgress,
-  useChaptersWithProgress,
-  useConfettiStore,
-  useCourses,
-} from "@/hooks";
+import { useChaptersWithProgress, useConfettiStore, useCourses } from "@/hooks";
 
 type Props = {
   user: UserValues;
@@ -30,35 +26,43 @@ const ChapterIdPage: NextPage<Props> = ({ user: { userId } }) => {
   const router = useRouter();
   const { courseId = "", chapterId = "" } = router.query;
 
-  const { chapter, isLoading: isLoadingChapter } = useChapterWithUserProgress(
-    `${chapterId}`
-  );
   const { courses, isLoading: isLoadingCourses } = useCourses({
     filter: {
       and: [{ courseId: { eq: courseId } }],
     },
   });
-  const { chapters, isLoading: isLoadingChapters } = useChaptersWithProgress(
-    `${courseId}`,
+
+  const {
+    chapters,
+    isLoading: isLoadingChapters,
+    handleRefreshProgress,
+  } = useChaptersWithProgress({
     userId,
-    {
+    query: {
       filter: {
         and: [
           { courseChaptersCourseId: { eq: courseId } },
           { isPublished: { eq: "true" } },
         ],
       },
-    }
-  );
-  const isLoading = React.useMemo(
-    () => isLoadingChapter || isLoadingCourses || isLoadingChapters,
-    [isLoadingChapter, isLoadingChapters, isLoadingCourses]
+    },
+  });
+
+  const chapter = React.useMemo(
+    () => chapters?.find((chapter) => chapter.id === chapterId),
+    [chapterId, chapters]
   );
 
   const course = React.useMemo(
     () => (courses?.length ? courses[0] : undefined),
     [courses]
   );
+
+  const isLoading = React.useMemo(
+    () => isLoadingCourses || isLoadingChapters,
+    [isLoadingChapters, isLoadingCourses]
+  );
+
   const isLocked = React.useMemo(() => !chapter?.isFree, [chapter?.isFree]);
   const completedChapters = React.useMemo(
     () => chapters?.filter((chapter) => chapter.isCompleted).length ?? 0,
@@ -68,33 +72,34 @@ const ChapterIdPage: NextPage<Props> = ({ user: { userId } }) => {
     () => chapters?.length ?? 0,
     [chapters?.length]
   );
-  const nextChapterId = chapters?.find(
-    (chapter) => chapter.position === chapter?.position! + 1
-  )?.id;
-
+  const nextChapterId = React.useMemo(
+    () => chapters?.find((c) => c.position === chapter?.position! + 1)?.id,
+    [chapters, chapter?.position]
+  );
   const progressCount = (completedChapters / numberChapters) * 100;
 
   const onEnded = async () => {
     try {
-      if (course && chapter?.isCompleted) {
+      if (!chapter?.isCompleted) {
         confetti.onOpen();
         await axios.put(
-          `/api/courses/${course.courseId}/chapters/${chapter.id}/progress`,
+          `/api/courses/${course!.courseId}/chapters/${chapter!.id}/progress`,
           {
-            isCompleted: true,
+            isCompleted: !chapter?.isCompleted,
           }
         );
         toast.success("Progress updated");
+        handleRefreshProgress();
         if (nextChapterId) {
-          router.push(`/courses/${course.courseId}/chapters/${nextChapterId}`);
-        } else {
-          router.reload();
+          router.push(`/courses/${course!.courseId}/chapters/${nextChapterId}`);
         }
       }
     } catch {
       toast.error("Something went wrong");
     }
   };
+
+  if (!chapter) return null;
 
   return (
     <CourseLayout
@@ -105,47 +110,15 @@ const ChapterIdPage: NextPage<Props> = ({ user: { userId } }) => {
       progressCount={progressCount}
       chapters={chapters}
     >
-      <CourseNotification
-        isVisible={!isLoading}
-        isCompleted={chapter.isCompleted || false}
+      <ChapterView
+        isLoading={isLoading}
         isLocked={isLocked}
+        chapter={chapter}
+        course={course}
+        nextChapterId={nextChapterId}
+        onEnded={onEnded}
+        handleRefreshProgress={handleRefreshProgress}
       />
-      <div className="p-4 flex flex-col gap-16 max-w-4xl mx-auto">
-        <div className="shadow-2xl shadow-black rounded-md">
-          <VideoPlayer
-            url={chapter?.streamUrl ?? ""}
-            start={timeDuration(chapter.streamStartTime ?? "00:00:00")}
-            end={timeDuration(chapter.streamEndTime ?? "00:00:00")}
-            isLocked={isLocked}
-            onEnded={onEnded}
-            isLoading={isLoading}
-          />
-        </div>
-        <div>
-          <div className="flex flex-col md:flex-row items-center justify-between">
-            <h2 className="text-2xl font-semibold">
-              {isLoading ? "Loading..." : chapter.title}
-            </h2>
-            {
-              <CourseProgressButton
-                isLoading={isLoading}
-                chapterId={chapter.id ?? ""}
-                courseId={course?.courseId ?? ""}
-                nextChapterId={nextChapterId}
-                isCompleted={!!chapter?.isCompleted}
-              />
-            }
-          </div>
-          {chapter.description !== "<p><br></p>" && (
-            <>
-              <div className="mt-4 mb-8">
-                <Divider orientation="horizontal" size="small" />
-              </div>
-              <Preview value={chapter.description!} />
-            </>
-          )}
-        </div>
-      </div>
     </CourseLayout>
   );
 };

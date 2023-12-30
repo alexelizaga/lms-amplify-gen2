@@ -1,5 +1,4 @@
-import { useQuery } from "react-query";
-import { useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { generateClient } from "aws-amplify/api";
 
 import { Schema } from "@/amplify/data/resource";
@@ -11,30 +10,39 @@ const client = generateClient<Schema>();
 
 export const useChapters = (query?: {}) => {
   const queryClient = useQueryClient();
-  const key = query ? JSON.stringify(query) : `/api/chapters`;
+  const queryKey = query ? [query] : ["chapters"];
 
-  const fetcher = () =>
+  const queryFn = () =>
     client.models.Chapter.list(query).then((res) => res.data);
 
-  const { data, isLoading, isError } = useQuery(key, fetcher);
+  const { data, ...props } = useQuery({
+    queryKey,
+    queryFn,
+  });
 
   const handleRefresh = () => {
-    queryClient.invalidateQueries(key);
+    queryClient.invalidateQueries({ queryKey });
   };
 
   return {
     chapters: data?.sort(orderByPosition),
-    isLoading,
-    isError,
+    ...props,
     handleRefresh,
   };
 };
 
-export const useChaptersWithProgress = (
-  courseId: string,
-  userId: string,
-  query?: {}
-) => {
+export const useChaptersWithProgress = ({
+  userId,
+  courseId,
+  query,
+}: {
+  userId: string;
+  courseId?: string;
+  query?: {};
+}) => {
+  const and = courseId
+    ? [{ courseId: { eq: courseId } }, { userId: { eq: userId } }]
+    : [{ userId: { eq: userId } }];
   const {
     chapters,
     isLoading: isLoadingChapters,
@@ -48,13 +56,14 @@ export const useChaptersWithProgress = (
     handleRefresh: handleRefreshProgress,
   } = useUserProgress({
     filter: {
-      and: [{ courseId: { eq: courseId } }, { userId: { eq: userId } }],
+      and,
     },
   });
 
   const isChapterCompleted = (chapterId: string): boolean => {
     return !!userProgress?.find(
-      (progress) => progress.chapterId === chapterId && progress.isCompleted
+      (progress: any) =>
+        progress.chapterId === chapterId && progress.isCompleted
     );
   };
 

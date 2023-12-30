@@ -13,6 +13,7 @@ interface CourseProgressButtonProps {
   courseId: string;
   isCompleted?: boolean;
   nextChapterId?: string;
+  refresh?: () => void;
 }
 
 export const CourseProgressButton = ({
@@ -21,6 +22,7 @@ export const CourseProgressButton = ({
   courseId,
   isCompleted,
   nextChapterId,
+  refresh,
 }: CourseProgressButtonProps) => {
   const router = useRouter();
   const confetti = useConfettiStore();
@@ -38,16 +40,15 @@ export const CourseProgressButton = ({
         }
       );
 
-      if (!isCompleted && !nextChapterId) {
+      if (!isCompleted) {
         confetti.onOpen();
       }
 
       toast.success("Progress updated");
+      refresh && refresh();
 
       if (!isCompleted && nextChapterId) {
         router.push(`/courses/${courseId}/chapters/${nextChapterId}`);
-      } else {
-        router.reload();
       }
     } catch {
       toast.error("Something went wrong");

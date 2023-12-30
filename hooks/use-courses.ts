@@ -1,5 +1,4 @@
-import { useQuery } from "react-query";
-import { useQueryClient } from "react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { generateClient } from "aws-amplify/api";
 
 import { Schema } from "@/amplify/data/resource";
@@ -10,21 +9,23 @@ const client = generateClient<Schema>();
 
 export const useCourses = (query?: {}) => {
   const queryClient = useQueryClient();
-  const key = query ? JSON.stringify(query) : `/api/courses`;
+  const queryKey = query ? [query] : ["courses"];
 
-  const fetcher = () =>
+  const queryFn = () =>
     client.models.Course.list(query).then((res) => res.data);
 
-  const { data, isLoading, isError } = useQuery(key, fetcher);
+  const { data, ...props } = useQuery({
+    queryKey,
+    queryFn,
+  });
 
   const handleRefresh = () => {
-    queryClient.invalidateQueries(key);
+    queryClient.invalidateQueries({ queryKey });
   };
 
   return {
     courses: data,
-    isLoading,
-    isError,
+    ...props,
     handleRefresh,
   };
 };
@@ -38,7 +39,12 @@ export const useCoursesWithProgress = ({
   categoryId?: string;
   title?: string;
 }) => {
-  const { courses, handleRefresh: refreshCourses } = useCourses({
+  const {
+    courses,
+    isLoading: isLoadingCourses,
+    isError: isErrorCourses,
+    handleRefresh: refreshCourses,
+  } = useCourses({
     filter: {
       and: [
         { isPublished: { eq: "true" } },
@@ -48,20 +54,34 @@ export const useCoursesWithProgress = ({
     },
   });
 
-  const { progress: userProgress, handleRefresh: refreshProgress } =
-    useUserProgress({
-      filter: {
-        and: [{ userId: { eq: userId } }],
-      },
-    });
+  const {
+    progress: userProgress,
+    isLoading: isLoadingProgress,
+    isError: isErrorProgress,
+    handleRefresh: refreshProgress,
+  } = useUserProgress({
+    filter: {
+      and: [{ userId: { eq: userId } }],
+    },
+  });
 
-  const { chapters, handleRefresh: refreshChapters } = useChapters({
+  const {
+    chapters,
+    isLoading: isLoadingChapters,
+    isError: isErrorChapters,
+    handleRefresh: refreshChapters,
+  } = useChapters({
     filter: {
       and: [{ isPublished: { eq: "true" } }],
     },
   });
 
-  const { categories, handleRefresh: refreshCategories } = useCategories();
+  const {
+    categories,
+    isLoading: isLoadingCategories,
+    isError: isErrorCategories,
+    handleRefresh: refreshCategories,
+  } = useCategories();
 
   const getCategory = (categoryId: string | undefined): string => {
     if (!categoryId) return "";
@@ -73,7 +93,7 @@ export const useCoursesWithProgress = ({
   const coursesWithProgress = courses?.map((course) => {
     const chaptersCompleted =
       userProgress?.filter(
-        (progress) =>
+        (progress: any) =>
           progress.courseId === course.courseId && progress.isCompleted
       ).length || 0;
 
@@ -92,6 +112,13 @@ export const useCoursesWithProgress = ({
 
   return {
     courses: coursesWithProgress,
+    isLoading:
+      isLoadingCategories ||
+      isLoadingChapters ||
+      isLoadingCourses ||
+      isLoadingProgress,
+    isError:
+      isErrorCategories || isErrorChapters || isErrorCourses || isErrorProgress,
     refreshCourses,
     refreshProgress,
     refreshChapters,
