@@ -3,18 +3,9 @@ import { NextPage } from "next";
 import { useRouter } from "next/router";
 import axios from "axios";
 import toast from "react-hot-toast";
-import { Divider } from "@aws-amplify/ui-react";
 
-import {
-  ChapterView,
-  CourseLayout,
-  CourseNotification,
-  CourseProgressButton,
-  Preview,
-  VideoPlayer,
-} from "@/components";
+import { ChapterView, CourseLayout } from "@/components";
 import { UserValues } from "@/types";
-import { timeDuration } from "@/utils";
 import { useChaptersWithProgress, useConfettiStore, useCourses } from "@/hooks";
 
 type Props = {
@@ -62,7 +53,6 @@ const ChapterIdPage: NextPage<Props> = ({ user: { userId } }) => {
     () => isLoadingCourses || isLoadingChapters,
     [isLoadingChapters, isLoadingCourses]
   );
-
   const isLocked = React.useMemo(() => !chapter?.isFree, [chapter?.isFree]);
   const completedChapters = React.useMemo(
     () => chapters?.filter((chapter) => chapter.isCompleted).length ?? 0,
@@ -76,7 +66,10 @@ const ChapterIdPage: NextPage<Props> = ({ user: { userId } }) => {
     () => chapters?.find((c) => c.position === chapter?.position! + 1)?.id,
     [chapters, chapter?.position]
   );
-  const progressCount = (completedChapters / numberChapters) * 100;
+  const progressCount = React.useMemo(
+    () => (completedChapters / numberChapters) * 100,
+    [completedChapters, numberChapters]
+  );
 
   const onEnded = async () => {
     try {

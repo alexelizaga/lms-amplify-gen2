@@ -11,9 +11,7 @@ type Props = {
 };
 
 const Home: NextPage<Props> = ({ user: { userId } }) => {
-  const { courses } = useCoursesWithProgress({
-    userId,
-  });
+  const { courses } = useCoursesWithProgress({ userId });
 
   const inProgress = React.useMemo(
     () =>

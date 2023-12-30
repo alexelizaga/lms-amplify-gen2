@@ -1,16 +1,9 @@
 import React from "react";
-import { GetServerSideProps, NextPage } from "next";
+import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { getCurrentUser } from "aws-amplify/auth/server";
-import { Loader2 } from "lucide-react";
 
-import { ChapterView, CourseLayout, DashboardLayout } from "@/components";
+import { ChapterView, CourseLayout } from "@/components";
 import { ChapterValues, CourseValues } from "@/types";
-import {
-  orderByPosition,
-  reqResBasedClient,
-  runWithAmplifyServerContext,
-} from "@/utils";
 import { useChapters } from "@/hooks";
 
 type Props = {
