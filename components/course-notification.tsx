@@ -15,7 +15,7 @@ export const CourseNotification = ({
   return (
     <>
       {isVisible && isCompleted && (
-        <div className="p-4 flex flex-col max-w-4xl mx-auto">
+        <div className="flex flex-col w-full">
           <div className="rounded-md overflow-hidden">
             <Alert
               variation="success"
@@ -29,7 +29,7 @@ export const CourseNotification = ({
         </div>
       )}
       {isVisible && isLocked && (
-        <div className="p-4 flex flex-col max-w-4xl mx-auto">
+        <div className="flex flex-col w-full">
           <div className="rounded-md overflow-hidden">
             <Alert
               variation="warning"

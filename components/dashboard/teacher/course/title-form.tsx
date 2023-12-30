@@ -86,6 +86,7 @@ export const TitleForm = ({ initialData }: TitleFormProps) => {
               size="small"
               isDisabled={!isValid}
               isLoading={isSubmitting}
+              width={85}
             >
               <Save className="h-4 w-4 mr-2" />
               Save
