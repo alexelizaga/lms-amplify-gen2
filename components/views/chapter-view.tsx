@@ -51,7 +51,7 @@ export const ChapterView = ({
             <CourseProgressButton
               isLoading={isLoading}
               chapterId={chapter.id ?? ""}
-              courseId={course?.courseId ?? ""}
+              courseId={course?.id ?? ""}
               nextChapterId={nextChapterId}
               isCompleted={!!chapter?.isCompleted}
               refresh={handleRefreshProgress}

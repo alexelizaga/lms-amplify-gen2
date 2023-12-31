@@ -19,6 +19,7 @@ interface VideoPlayerProps {
   playing?: boolean;
   loop?: boolean;
   isLocked?: boolean;
+  isMini?: boolean;
   onEnded?: () => void;
 }
 
@@ -31,6 +32,7 @@ export const VideoPlayer = ({
   playing = false,
   loop = false,
   isLocked = false,
+  isMini = false,
   onEnded,
 }: VideoPlayerProps) => {
   const videoRef = React.useRef<ReactPlayer>(null);
@@ -154,6 +156,7 @@ export const VideoPlayer = ({
         </div>
       </button>
       <VideoControls
+        isMini={isMini}
         isLoading={isLoading || !isStarted}
         isPlaying={isPlaying}
         onPlaying={onPlaying}

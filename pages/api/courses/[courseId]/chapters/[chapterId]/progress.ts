@@ -32,8 +32,7 @@ const createUserProgress = async (
       });
     }
 
-    const { chapterId = "" } = req.query;
-    const { courseId = "" } = req.query;
+    const { chapterId = "", courseId = "" } = req.query;
     const { isCompleted } = await req.body;
 
     if (typeof chapterId !== "string" || typeof courseId !== "string") {

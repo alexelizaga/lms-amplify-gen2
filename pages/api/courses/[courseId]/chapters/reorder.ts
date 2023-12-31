@@ -41,16 +41,17 @@ const reorderChapters = async (req: NextApiRequest, res: NextApiResponse) => {
     const courses = await runWithAmplifyServerContext({
       nextServerContext: { request: req, response: res },
       operation: async (contextSpec) => {
-        const { data: courses } = await reqResBasedClient.models.Course.list(
-          contextSpec
+        const { data: courses } = await reqResBasedClient.models.Course.get(
+          contextSpec,
+          {
+            id: courseId,
+          }
         );
         return courses;
       },
     });
 
-    const courseOwner = courses.find(
-      (course) => course.userId === userId && course.courseId === courseId
-    );
+    const courseOwner = courses.userId === userId;
 
     if (!courseOwner) {
       return res.status(401).json({

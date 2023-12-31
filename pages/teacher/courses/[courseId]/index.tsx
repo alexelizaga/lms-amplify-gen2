@@ -8,7 +8,11 @@ import {
   ListChecks,
 } from "lucide-react";
 
-import { reqResBasedClient, runWithAmplifyServerContext } from "@/utils";
+import {
+  goHome,
+  reqResBasedClient,
+  runWithAmplifyServerContext,
+} from "@/utils";
 import {
   IconBadge,
   DashboardLayout,
@@ -45,7 +49,7 @@ const CourseIdPage: NextPage<Props> = ({ course, categories, chapters }) => {
     course.image || course.imageUrl,
     course.price !== null,
     course.categoryCoursesId,
-    chapters.some((chapter) => chapter.isPublished),
+    chapters?.some((chapter) => chapter.isPublished),
   ];
 
   const totalFields = requiredFields.length;
@@ -91,9 +95,9 @@ const CourseIdPage: NextPage<Props> = ({ course, categories, chapters }) => {
               </div>
               <Actions
                 disabled={!isComplete}
-                courseId={course.courseId}
+                courseId={course.id}
                 isPublished={course.isPublished ?? false}
-                hasChapters={!!chapters.length}
+                hasChapters={!!chapters?.length}
               />
             </div>
           </div>
@@ -146,39 +150,22 @@ export const getServerSideProps: GetServerSideProps = async ({
       operation: (contextSpec) => getCurrentUser(contextSpec),
     });
 
-    if (!userId) {
-      return {
-        redirect: {
-          destination: "/",
-          permanent: false,
-        },
-      };
-    }
+    if (!userId) return goHome();
 
     const course = await runWithAmplifyServerContext({
       nextServerContext: { request: req, response: res },
       operation: async (contextSpec) => {
-        const { data: course } = await reqResBasedClient.models.Course.list(
+        const { data: course } = await reqResBasedClient.models.Course.get(
           contextSpec,
           {
-            filter: {
-              and: [{ courseId: { eq: courseId } }, { userId: { eq: userId } }],
-            },
+            id: courseId,
           }
         );
-        if (!course.length) return undefined;
-        return JSON.parse(JSON.stringify(course[0]));
+        return course;
       },
     });
 
-    if (!course) {
-      return {
-        redirect: {
-          destination: "/",
-          permanent: false,
-        },
-      };
-    }
+    if (!course) return goHome();
 
     const chapters = await runWithAmplifyServerContext({
       nextServerContext: { request: req, response: res },
@@ -187,14 +174,11 @@ export const getServerSideProps: GetServerSideProps = async ({
           contextSpec,
           {
             filter: {
-              and: [
-                { courseChaptersCourseId: { eq: courseId } },
-                { courseChaptersUserId: { eq: userId } },
-              ],
+              and: [{ courseChaptersId: { eq: courseId } }],
             },
           }
         );
-        return JSON.parse(JSON.stringify(chapters));
+        return chapters;
       },
     });
 
@@ -203,11 +187,17 @@ export const getServerSideProps: GetServerSideProps = async ({
       operation: async (contextSpec) => {
         const { data: categories } =
           await reqResBasedClient.models.Category.list(contextSpec);
-        return JSON.parse(JSON.stringify(categories));
+        return categories;
       },
     });
 
-    return { props: { course, categories, chapters } };
+    return {
+      props: {
+        course: JSON.parse(JSON.stringify(course)),
+        chapters: JSON.parse(JSON.stringify(chapters)),
+        categories: JSON.parse(JSON.stringify(categories)),
+      },
+    };
   } catch (error) {
     return {
       redirect: {

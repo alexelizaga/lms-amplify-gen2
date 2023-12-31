@@ -42,8 +42,7 @@ const publishCourse = async (req: NextApiRequest, res: NextApiResponse) => {
       operation: async (contextSpec) => {
         const { data: updatedCourse } =
           await reqResBasedClient.models.Course.update(contextSpec, {
-            courseId,
-            userId,
+            id: courseId,
             isPublished: true,
           });
         return updatedCourse;
@@ -52,7 +51,7 @@ const publishCourse = async (req: NextApiRequest, res: NextApiResponse) => {
 
     return res.status(200).json(updatedCourse);
   } catch (error) {
-    console.log("[COURSE_ID]", error);
+    console.log("[PUBLISH]", error);
     return res.status(500).json({
       message: "Internal Error",
     });

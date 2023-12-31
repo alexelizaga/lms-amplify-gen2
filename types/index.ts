@@ -2,7 +2,8 @@ import { Schema } from "@/amplify/data/resource";
 
 export type CourseValues = Pick<
   Schema["Course"],
-  | "courseId"
+  | "id"
+  | "category"
   | "userId"
   | "title"
   | "description"
@@ -35,8 +36,9 @@ export type ChapterValues = Pick<
   | "streamEndTime"
   | "isPublished"
   | "isFree"
-  | "courseChaptersCourseId"
-  | "courseChaptersUserId"
+  | "courseChaptersId"
+  | "course"
+  | "owner"
 >;
 
 export type PhotoValues = {

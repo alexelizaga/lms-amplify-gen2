@@ -36,7 +36,7 @@ export const CourseSidebar = ({
               id={chapter.id}
               label={chapter.title}
               isCompleted={chapter.isCompleted}
-              courseId={course?.courseId}
+              courseId={course?.id}
               isLocked={!chapter.isFree}
             />
           ))}

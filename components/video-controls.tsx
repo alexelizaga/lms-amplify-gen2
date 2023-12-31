@@ -5,6 +5,7 @@ import { MdFullscreen, MdFullscreenExit } from "react-icons/md";
 import { formatTime } from "@/utils";
 
 interface VideoControlsProps {
+  isMini?: boolean;
   isLoading?: boolean;
   isPlaying: boolean;
   onPlaying: () => void;
@@ -22,6 +23,7 @@ interface VideoControlsProps {
 }
 
 export const VideoControls = ({
+  isMini = false,
   isLoading = false,
   isPlaying,
   onPlaying,
@@ -91,33 +93,37 @@ export const VideoControls = ({
           </div>
           <span className="text-white mr-3">{formatTime(max)}</span>
         </div>
-        <div className="flex items-center">
-          <input
-            type="range"
-            className="w-16 h-1.5 bg-gray-600 rounded-full mr-2"
-            min={0}
-            max={1}
-            step={0.1}
-            value={volume}
-            onChange={onVolumeChange}
-          />
-          <select
-            className="bg-black text-white px-2 py-1 rounded-md focus:outline-none"
-            value={playbackRate}
-            onChange={onPlaybackRateChange}
-          >
-            <option value="0.5">0.5x</option>
-            <option value="1">1x</option>
-            <option value="1.5">1.5x</option>
-            <option value="2">2x</option>
-          </select>
-        </div>
-        <button
-          className="text-white focus:outline-none"
-          onClick={onFullscreen}
-        >
-          <FullscreenIcon size={24} />
-        </button>
+        {!isMini && (
+          <>
+            <div className="flex items-center">
+              <input
+                type="range"
+                className="w-16 h-1.5 bg-gray-600 rounded-full mr-2"
+                min={0}
+                max={1}
+                step={0.1}
+                value={volume}
+                onChange={onVolumeChange}
+              />
+              <select
+                className="bg-black text-white px-2 py-1 rounded-md focus:outline-none"
+                value={playbackRate}
+                onChange={onPlaybackRateChange}
+              >
+                <option value="0.5">0.5x</option>
+                <option value="1">1x</option>
+                <option value="1.5">1.5x</option>
+                <option value="2">2x</option>
+              </select>
+            </div>
+            <button
+              className="text-white focus:outline-none"
+              onClick={onFullscreen}
+            >
+              <FullscreenIcon size={24} />
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

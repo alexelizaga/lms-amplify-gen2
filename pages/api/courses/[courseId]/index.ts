@@ -40,14 +40,12 @@ const updateCourse = async (req: NextApiRequest, res: NextApiResponse) => {
       operation: async (contextSpec) => {
         const { data: updateCourse } =
           await reqResBasedClient.models.Course.update(contextSpec, {
-            userId,
-            courseId,
+            id: courseId,
             ...values,
           });
         return updateCourse;
       },
     });
-
     return res.status(200).json(updatedCourse);
   } catch (error) {
     console.log("[COURSE_ID]", error);
@@ -86,17 +84,15 @@ const deleteCourse = async (req: NextApiRequest, res: NextApiResponse) => {
           {
             filter: {
               and: [
-                { courseChaptersCourseId: { eq: courseId } },
-                { courseChaptersUserId: { eq: userId } },
+                { courseChaptersId: { eq: courseId } },
+                { owner: { eq: userId } },
               ],
             },
           }
         );
-        return JSON.parse(JSON.stringify(chapters));
+        return chapters;
       },
     });
-
-    console.log({ chapters, canDelete: chapters.length });
 
     if (!!chapters.length) {
       return res.status(404).json({
@@ -109,8 +105,7 @@ const deleteCourse = async (req: NextApiRequest, res: NextApiResponse) => {
       operation: async (contextSpec) => {
         const { data: deleteCourse } =
           await reqResBasedClient.models.Course.delete(contextSpec, {
-            userId,
-            courseId,
+            id: courseId,
           });
         return deleteCourse;
       },

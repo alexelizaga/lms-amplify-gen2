@@ -33,7 +33,7 @@ const CreatePage = () => {
         ...values,
       });
 
-      router.push(`/teacher/courses/${data.courseId}`);
+      router.push(`/teacher/courses/${data.id}`);
       toast.success("Course created");
     } catch (error) {
       toast.error("Something went wrong");
