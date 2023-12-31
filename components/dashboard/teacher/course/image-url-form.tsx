@@ -27,7 +27,7 @@ export const ImageUrlForm = ({ initialData }: ImageUrlFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/courses/${initialData.courseId}`, values);
+      await axios.patch(`/api/courses/${initialData.id}`, values);
       toast.success("Course updated");
       toggleEdit();
       router.reload();

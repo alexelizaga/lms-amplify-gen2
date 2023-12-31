@@ -94,13 +94,12 @@ export const useCoursesWithProgress = ({
     const chaptersCompleted =
       userProgress?.filter(
         (progress: any) =>
-          progress.courseId === course.courseId && progress.isCompleted
+          progress.courseId === course.id && progress.isCompleted
       ).length || 0;
 
     const numberOfChapters =
-      chapters?.filter(
-        (chapter) => chapter.courseChaptersCourseId === course.courseId
-      ).length || 0;
+      chapters?.filter((chapter) => chapter.courseChaptersId === course.id)
+        .length || 0;
 
     return {
       ...course,

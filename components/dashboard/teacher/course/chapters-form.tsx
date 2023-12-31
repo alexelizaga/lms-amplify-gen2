@@ -36,7 +36,7 @@ export const ChaptersForm = ({ initialData }: ChaptersFormProps) => {
 
   const getCourseChapters = () => {
     axios
-      .get<ChapterValues[]>(`/api/courses/${initialData.courseId}/chapters`)
+      .get<ChapterValues[]>(`/api/courses/${initialData.id}/chapters`)
       .then(({ data: chapters }) => {
         setChapters(chapters);
       });
@@ -59,7 +59,7 @@ export const ChaptersForm = ({ initialData }: ChaptersFormProps) => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.post(`/api/courses/${initialData.courseId}/chapters`, {
+      await axios.post(`/api/courses/${initialData.id}/chapters`, {
         ...values,
         position: chapters?.length + 1,
       });
@@ -75,7 +75,7 @@ export const ChaptersForm = ({ initialData }: ChaptersFormProps) => {
     try {
       setIsUpdating(true);
 
-      await axios.put(`/api/courses/${initialData.courseId}/chapters/reorder`, {
+      await axios.put(`/api/courses/${initialData.id}/chapters/reorder`, {
         list: updateData,
       });
       toast.success("Chapters reordered");
@@ -88,7 +88,7 @@ export const ChaptersForm = ({ initialData }: ChaptersFormProps) => {
   };
 
   const onEdit = (id: string) => {
-    router.push(`/teacher/courses/${initialData.courseId}/chapters/${id}`);
+    router.push(`/teacher/courses/${initialData.id}/chapters/${id}`);
   };
 
   return (

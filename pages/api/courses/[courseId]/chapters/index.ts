@@ -47,10 +47,7 @@ const getChapters = async (req: NextApiRequest, res: NextApiResponse) => {
           contextSpec,
           {
             filter: {
-              and: [
-                { courseChaptersCourseId: { eq: courseId } },
-                { courseChaptersUserId: { eq: userId } },
-              ],
+              and: [{ courseChaptersId: { eq: courseId } }],
             },
           }
         );
@@ -60,7 +57,7 @@ const getChapters = async (req: NextApiRequest, res: NextApiResponse) => {
 
     return res.status(200).json(chapters);
   } catch (error) {
-    console.log("[COURSES]", error);
+    console.log("[CHAPTERS]", error);
     return res.status(500).json({
       message: "Internal Error",
     });
@@ -89,19 +86,20 @@ const createChapter = async (req: NextApiRequest, res: NextApiResponse) => {
       });
     }
 
-    const courses = await runWithAmplifyServerContext({
+    const course = await runWithAmplifyServerContext({
       nextServerContext: { request: req, response: res },
       operation: async (contextSpec) => {
-        const { data: courses } = await reqResBasedClient.models.Course.list(
-          contextSpec
+        const { data: course } = await reqResBasedClient.models.Course.get(
+          contextSpec,
+          {
+            id: courseId,
+          }
         );
-        return courses;
+        return course;
       },
     });
 
-    const courseOwner = courses.find(
-      (course) => course.userId === userId && course.courseId === courseId
-    );
+    const courseOwner = course.userId === userId;
 
     if (!courseOwner) {
       return res.status(401).json({
@@ -116,8 +114,7 @@ const createChapter = async (req: NextApiRequest, res: NextApiResponse) => {
           await reqResBasedClient.models.Chapter.create(contextSpec, {
             title,
             position,
-            courseChaptersCourseId: courseId,
-            courseChaptersUserId: userId,
+            course,
           });
         return newChapter;
       },
@@ -125,7 +122,7 @@ const createChapter = async (req: NextApiRequest, res: NextApiResponse) => {
 
     return res.status(200).json(newChapter);
   } catch (error) {
-    console.log("[COURSES]", error);
+    console.log("[CHAPTERS]", error);
     return res.status(500).json({
       message: "Internal Error",
     });

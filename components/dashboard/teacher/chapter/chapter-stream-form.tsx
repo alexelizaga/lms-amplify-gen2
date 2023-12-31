@@ -72,7 +72,7 @@ export const ChapterStreamForm = ({ initialData }: ChapterYoutubeFormProps) => {
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(
-        `/api/courses/${initialData.courseChaptersCourseId}/chapters/${initialData.id}`,
+        `/api/courses/${initialData.courseChaptersId}/chapters/${initialData.id}`,
         values
       );
       toast.success("Chapter updated");
@@ -109,6 +109,7 @@ export const ChapterStreamForm = ({ initialData }: ChapterYoutubeFormProps) => {
       {!isEditing && initialData.streamUrl && (
         <div className="mt-2">
           <VideoPlayer
+            isMini
             url={initialData?.streamUrl ?? ""}
             start={timeDuration(initialData.streamStartTime ?? "00:00:00")}
             end={timeDuration(initialData.streamEndTime ?? "00:00:00")}

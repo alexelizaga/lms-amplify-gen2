@@ -29,8 +29,7 @@ const unpublishChapter = async (req: NextApiRequest, res: NextApiResponse) => {
       });
     }
 
-    const { chapterId: id = "" } = req.query;
-    const { courseId = "" } = req.query;
+    const { chapterId: id = "", courseId = "" } = req.query;
 
     if (typeof id !== "string" || typeof courseId !== "string") {
       return res.status(400).json({
@@ -38,19 +37,20 @@ const unpublishChapter = async (req: NextApiRequest, res: NextApiResponse) => {
       });
     }
 
-    const courses = await runWithAmplifyServerContext({
+    const course = await runWithAmplifyServerContext({
       nextServerContext: { request: req, response: res },
       operation: async (contextSpec) => {
-        const { data: courses } = await reqResBasedClient.models.Course.list(
-          contextSpec
+        const { data: course } = await reqResBasedClient.models.Course.get(
+          contextSpec,
+          {
+            id: courseId,
+          }
         );
-        return courses;
+        return course;
       },
     });
 
-    const courseOwner = courses.find(
-      (course) => course.userId === userId && course.courseId === courseId
-    );
+    const courseOwner = course.userId === userId;
 
     if (!courseOwner) {
       return res.status(401).json({
@@ -93,8 +93,7 @@ const unpublishChapter = async (req: NextApiRequest, res: NextApiResponse) => {
         operation: async (contextSpec) => {
           const { data: updateCourse } =
             await reqResBasedClient.models.Course.update(contextSpec, {
-              userId,
-              courseId,
+              id: courseId,
               isPublished: false,
             });
           return updateCourse;
@@ -104,7 +103,7 @@ const unpublishChapter = async (req: NextApiRequest, res: NextApiResponse) => {
 
     return res.status(200).json(unpublishedChapter);
   } catch (error) {
-    console.log("[COURSE_ID]", error);
+    console.log("[UNPUBLISH]", error);
     return res.status(500).json({
       message: "Internal Error",
     });

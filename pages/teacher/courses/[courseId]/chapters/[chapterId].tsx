@@ -55,7 +55,7 @@ const ChapterIdPage: NextPage<Props> = ({ chapter }) => {
         <div className="flex items-center justify-between">
           <div className="w-full">
             <Link
-              href={`/teacher/courses/${chapter.courseChaptersCourseId}`}
+              href={`/teacher/courses/${chapter.courseChaptersId}`}
               className="flex items-center text-sm hover:opacity-75 transition mb-6"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
@@ -70,7 +70,7 @@ const ChapterIdPage: NextPage<Props> = ({ chapter }) => {
               </div>
               <ChapterActions
                 disabled={!isComplete}
-                courseId={chapter.courseChaptersCourseId ?? ""}
+                courseId={chapter.courseChaptersId ?? ""}
                 chapterId={chapter.id}
                 isPublished={chapter.isPublished ?? false}
               />

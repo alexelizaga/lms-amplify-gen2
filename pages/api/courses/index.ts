@@ -64,18 +64,14 @@ const createCourse = async (req: NextApiRequest, res: NextApiResponse) => {
     });
     const { title } = await req.body;
 
-    if (!userId) {
-      return res.status(401).json({
-        message: "Unauthorized",
-      });
-    }
+    if (!userId) return res.status(401).json({ message: "Unauthorized" });
+    if (!title) return res.status(400).json({ message: "Bad request" });
 
     const newCourse = await runWithAmplifyServerContext({
       nextServerContext: { request: req, response: res },
       operation: async (contextSpec) => {
         const { data: newCourse } =
           await reqResBasedClient.models.Course.create(contextSpec, {
-            courseId: uuid(),
             title,
             userId,
           });
@@ -85,7 +81,7 @@ const createCourse = async (req: NextApiRequest, res: NextApiResponse) => {
 
     return res.status(200).json(newCourse);
   } catch (error) {
-    console.log("[COURSES]", error);
+    console.log("[COURSE]", error);
     return res.status(500).json({
       message: "Internal Error",
     });

@@ -6,7 +6,12 @@ import toast from "react-hot-toast";
 
 import { ChapterView, CourseLayout } from "@/components";
 import { UserValues } from "@/types";
-import { useChaptersWithProgress, useConfettiStore, useCourses } from "@/hooks";
+import {
+  useChaptersWithProgress,
+  useConfettiStore,
+  useCourse,
+  useCourses,
+} from "@/hooks";
 
 type Props = {
   user: UserValues;
@@ -17,11 +22,7 @@ const ChapterIdPage: NextPage<Props> = ({ user: { userId } }) => {
   const router = useRouter();
   const { courseId = "", chapterId = "" } = router.query;
 
-  const { courses, isLoading: isLoadingCourses } = useCourses({
-    filter: {
-      and: [{ courseId: { eq: courseId } }],
-    },
-  });
+  const { course, isLoading: isLoadingCourses } = useCourse(`${courseId}`);
 
   const {
     chapters,
@@ -32,7 +33,7 @@ const ChapterIdPage: NextPage<Props> = ({ user: { userId } }) => {
     query: {
       filter: {
         and: [
-          { courseChaptersCourseId: { eq: courseId } },
+          { courseChaptersId: { eq: courseId } },
           { isPublished: { eq: "true" } },
         ],
       },
@@ -42,11 +43,6 @@ const ChapterIdPage: NextPage<Props> = ({ user: { userId } }) => {
   const chapter = React.useMemo(
     () => chapters?.find((chapter) => chapter.id === chapterId),
     [chapterId, chapters]
-  );
-
-  const course = React.useMemo(
-    () => (courses?.length ? courses[0] : undefined),
-    [courses]
   );
 
   const isLoading = React.useMemo(
@@ -76,7 +72,7 @@ const ChapterIdPage: NextPage<Props> = ({ user: { userId } }) => {
       if (!chapter?.isCompleted) {
         confetti.onOpen();
         await axios.put(
-          `/api/courses/${course!.courseId}/chapters/${chapter!.id}/progress`,
+          `/api/courses/${course!.id}/chapters/${chapter!.id}/progress`,
           {
             isCompleted: !chapter?.isCompleted,
           }
@@ -84,7 +80,7 @@ const ChapterIdPage: NextPage<Props> = ({ user: { userId } }) => {
         toast.success("Progress updated");
         handleRefreshProgress();
         if (nextChapterId) {
-          router.push(`/courses/${course!.courseId}/chapters/${nextChapterId}`);
+          router.push(`/courses/${course!.id}/chapters/${nextChapterId}`);
         }
       }
     } catch {

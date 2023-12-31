@@ -5,14 +5,13 @@ const schema = a.schema({
     .model({
       category: a.belongsTo("Category"),
       chapters: a.hasMany("Chapter"),
-      courseId: a.id().required(),
       description: a.string(),
       image: a.string(),
       imageUrl: a.string(),
       isPublished: a.boolean().default(false),
       price: a.float(),
       title: a.string().required(),
-      userId: a.id().required(),
+      userId: a.id(),
     })
     .authorization([a.allow.owner(), a.allow.private().to(["read"])]),
   Category: a
@@ -34,6 +33,7 @@ const schema = a.schema({
       streamUrl: a.string(),
       title: a.string().required(),
       video: a.string(),
+      userId: a.id(),
     })
     .authorization([a.allow.owner(), a.allow.private().to(["read"])]),
   UserProgress: a

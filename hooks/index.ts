@@ -3,6 +3,7 @@ export { useCategory } from "./use-category";
 export { useChapter, useChapterWithUserProgress } from "./use-chapter";
 export { useChapters, useChaptersWithProgress } from "./use-chapters";
 export { useConfettiStore } from "./use-confetti-store";
+export { useCourse } from "./use-course";
 export { useCourses, useCoursesWithProgress } from "./use-courses";
 export { useDebounce } from "./use-debounce";
 export { useThemeStore } from "./theme-mode-store";

@@ -42,13 +42,12 @@ const deleteCourses = async (req: NextApiRequest, res: NextApiResponse) => {
       },
     });
 
-    courses.forEach(async ({ courseId, userId }) => {
+    courses.forEach(async ({ id }) => {
       await runWithAmplifyServerContext({
         nextServerContext: { request: req, response: res },
         operation: async (contextSpec) => {
           await reqResBasedClient.models.Course.delete(contextSpec, {
-            courseId,
-            userId,
+            id,
           });
         },
       });

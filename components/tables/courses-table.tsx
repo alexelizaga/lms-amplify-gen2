@@ -38,7 +38,7 @@ export function CoursesTable({ data }: DataTableProps) {
       </TableHead>
       <TableBody>
         {data.map((item, index) => (
-          <TableRow key={item.courseId}>
+          <TableRow key={item.id}>
             <TableCell width={50}>{index + 1}</TableCell>
             <TableCell>{item.title}</TableCell>
             <TableCell width={100}>
@@ -56,7 +56,7 @@ export function CoursesTable({ data }: DataTableProps) {
                 variation="link"
                 size="small"
                 loadingText=""
-                onClick={() => goTo(item.courseId)}
+                onClick={() => goTo(item.id)}
               >
                 <Pencil className="h-4 w-4" />
               </Button>

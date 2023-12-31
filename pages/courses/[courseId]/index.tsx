@@ -1,24 +1,25 @@
 import React from "react";
-import { NextPage } from "next";
+import { GetServerSideProps, NextPage } from "next";
 import { useRouter } from "next/router";
+import { getCurrentUser } from "aws-amplify/auth/server";
 
 import { ChapterView, CourseLayout } from "@/components";
 import { ChapterValues, CourseValues } from "@/types";
 import { useChapters } from "@/hooks";
+import { goHome, runWithAmplifyServerContext } from "@/utils";
 
 type Props = {
-  course: CourseValues;
-  chapters: ChapterValues[];
+  userId: any;
 };
 
-const CourseIdPage: NextPage<Props> = () => {
+const CourseIdPage: NextPage<Props> = ({ userId }) => {
   const router = useRouter();
   const { courseId } = router.query;
 
   const { chapters } = useChapters({
     filter: {
       and: [
-        { courseChaptersCourseId: { eq: courseId } },
+        { courseChaptersId: { eq: courseId } },
         { isPublished: { eq: "true" } },
       ],
     },
@@ -46,5 +47,20 @@ const CourseIdPage: NextPage<Props> = () => {
     </CourseLayout>
   );
 };
+
+// export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
+//   try {
+//     const { userId } = await runWithAmplifyServerContext({
+//       nextServerContext: { request: req, response: res },
+//       operation: (contextSpec) => getCurrentUser(contextSpec),
+//     });
+
+//     if (!userId) return goHome();
+
+//     return { props: { userId } };
+//   } catch (error) {
+//     goHome();
+//   }
+// };
 
 export default CourseIdPage;

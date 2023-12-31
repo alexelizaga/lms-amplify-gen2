@@ -9,6 +9,7 @@ import {
   reqResBasedClient,
   runWithAmplifyServerContext,
   orderByTitle,
+  goHome,
 } from "@/utils";
 import { CourseValues } from "@/types";
 import { CoursesTable } from "@/components";
@@ -45,14 +46,7 @@ export const getServerSideProps: GetServerSideProps = async ({ req, res }) => {
       operation: (contextSpec) => getCurrentUser(contextSpec),
     });
 
-    if (!userId) {
-      return {
-        redirect: {
-          destination: "/",
-          permanent: false,
-        },
-      };
-    }
+    if (!userId) return goHome();
 
     const userCourses = await runWithAmplifyServerContext({
       nextServerContext: { request: req, response: res },
