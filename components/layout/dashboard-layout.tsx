@@ -42,11 +42,13 @@ export const DashboardLayout: React.FC<Props> = ({
         <Navbar />
       </View>
 
-      <nav className="hidden md:flex h-full w-56 flex-col fixed inset-y-0 z-10">
+      <nav className="w-56 hidden md:flex flex-col fixed inset-y-0 z-10">
         <Sidebar />
       </nav>
 
-      <main className="md:pl-56 pt-[80px] h-full">{children}</main>
+      <main className="md:pl-56 pt-[80px] flex flex-col flex-1">
+        {children}
+      </main>
     </ScrollView>
   );
 };

@@ -28,7 +28,7 @@ const Home: NextPage<Props> = ({ user: { userId } }) => {
 
   return (
     <DashboardLayout title="Home" pageDescription="">
-      <div className="px-6 pb-16">
+      <div className="px-6 pb-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <InfoCard
             icon={Clock}

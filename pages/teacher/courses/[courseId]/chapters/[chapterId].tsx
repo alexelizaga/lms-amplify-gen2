@@ -37,7 +37,7 @@ const ChapterIdPage: NextPage<Props> = ({ chapter }) => {
 
   return (
     <DashboardLayout title={chapter?.title} pageDescription="">
-      <div className="px-6 pb-16">
+      <div className="px-6 pb-6">
         {!chapter.isPublished ? (
           <div className="mb-6">
             <Alert
