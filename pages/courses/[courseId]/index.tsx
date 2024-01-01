@@ -5,7 +5,12 @@ import { getCurrentUser } from "aws-amplify/auth/server";
 
 import { ChapterView, CourseLayout } from "@/components";
 import { ChapterValues, CourseValues } from "@/types";
-import { useChapters } from "@/hooks";
+import {
+  useChapterWithUserProgress,
+  useChapters,
+  useChaptersWithProgress,
+  useUserProgress,
+} from "@/hooks";
 import { goHome, runWithAmplifyServerContext } from "@/utils";
 
 type Props = {
@@ -16,18 +21,24 @@ const CourseIdPage: NextPage<Props> = ({ userId }) => {
   const router = useRouter();
   const { courseId } = router.query;
 
-  const { chapters } = useChapters({
-    filter: {
-      and: [
-        { courseChaptersId: { eq: courseId } },
-        { isPublished: { eq: "true" } },
-      ],
+  const { chapters } = useChaptersWithProgress({
+    userId,
+    query: {
+      filter: {
+        and: [
+          { courseChaptersId: { eq: courseId } },
+          { isPublished: { eq: "true" } },
+        ],
+      },
     },
   });
 
   React.useEffect(() => {
     if (chapters?.length) {
-      router.push(`/courses/${courseId}/chapters/${chapters[0].id}`);
+      const chapterId =
+        chapters?.find((chapter) => !chapter.isCompleted && chapter.isPublished)
+          ?.id ?? chapters![0].id;
+      router.push(`/courses/${courseId}/chapters/${chapterId}`);
     }
   }, [chapters, courseId]);
 

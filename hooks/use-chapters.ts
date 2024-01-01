@@ -61,6 +61,7 @@ export const useChaptersWithProgress = ({
   });
 
   const isChapterCompleted = (chapterId: string): boolean => {
+    if (!userProgress?.length) return false;
     return !!userProgress?.find(
       (progress: any) =>
         progress.chapterId === chapterId && progress.isCompleted
