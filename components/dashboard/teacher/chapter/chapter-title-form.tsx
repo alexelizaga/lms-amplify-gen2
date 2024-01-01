@@ -96,7 +96,7 @@ export const ChapterTitleForm = ({ initialData }: ChapterTitleFormProps) => {
               type="submit"
               variation="primary"
               size="small"
-              isDisabled={!isValid || !isChange}
+              isDisabled={!isValid || isSubmitting || !isChange}
               isLoading={isSubmitting}
               width={85}
               height={35}

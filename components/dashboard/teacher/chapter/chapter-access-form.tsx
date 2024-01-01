@@ -28,6 +28,7 @@ const formSchema = z.object({
 export const ChapterAccessForm = ({ initialData }: ChapterAccessFormProps) => {
   const { tokens } = useTheme();
   const [isEditing, setIsEditing] = React.useState(false);
+  const [isChange, setIsChange] = React.useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
 
@@ -97,11 +98,12 @@ export const ChapterAccessForm = ({ initialData }: ChapterAccessFormProps) => {
               checked={getValues("isFree")}
               disabled={isSubmitting}
               label="Make this chapter free for preview"
-              onChange={({ target }) => {
-                setValue("isFree", target.checked, {
+              onChange={({ target: { checked } }) => {
+                setValue("isFree", checked, {
                   shouldValidate: true,
                   shouldTouch: true,
                 });
+                setIsChange(checked !== initialData.isFree);
               }}
             />
           </Flex>
@@ -110,7 +112,7 @@ export const ChapterAccessForm = ({ initialData }: ChapterAccessFormProps) => {
               type="submit"
               variation="primary"
               size="small"
-              disabled={!isValid || isSubmitting}
+              disabled={!isValid || isSubmitting || !isChange}
               width={85}
               height={35}
             >
