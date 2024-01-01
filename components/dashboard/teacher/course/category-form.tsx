@@ -25,6 +25,7 @@ export const CategoryForm = ({ initialData, options }: CategoryFormProps) => {
   const { tokens } = useTheme();
   const router = useRouter();
   const [isEditing, setIsEditing] = React.useState(false);
+  const [isChange, setIsChange] = React.useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
 
@@ -91,6 +92,7 @@ export const CategoryForm = ({ initialData, options }: CategoryFormProps) => {
                   shouldValidate: true,
                   shouldTouch: true,
                 });
+                setIsChange(value !== initialData.categoryCoursesId);
               }}
             />
             {errors.categoryCoursesId?.message && (
@@ -104,7 +106,7 @@ export const CategoryForm = ({ initialData, options }: CategoryFormProps) => {
               type="submit"
               variation="primary"
               size="small"
-              isDisabled={!isValid}
+              isDisabled={!isValid || !isChange}
               isLoading={isSubmitting}
               width={85}
               height={35}

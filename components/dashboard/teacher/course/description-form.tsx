@@ -31,6 +31,7 @@ export const DescriptionForm = ({ initialData }: DescriptionFormProps) => {
   const { tokens } = useTheme();
   const router = useRouter();
   const [isEditing, setIsEditing] = React.useState(false);
+  const [isChange, setIsChange] = React.useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
 
@@ -97,6 +98,7 @@ export const DescriptionForm = ({ initialData }: DescriptionFormProps) => {
                 shouldValidate: true,
                 shouldTouch: true,
               });
+              setIsChange(value !== initialData.description);
             }}
           />
           <div className="flex items-center gap-x-2">
@@ -104,9 +106,10 @@ export const DescriptionForm = ({ initialData }: DescriptionFormProps) => {
               type="submit"
               variation="primary"
               size="small"
-              isDisabled={!isValid}
+              isDisabled={!isValid || !isChange}
               isLoading={isSubmitting}
               width={85}
+              height={35}
             >
               <Save className="h-4 w-4 mr-2" />
               Save

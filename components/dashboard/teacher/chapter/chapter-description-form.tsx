@@ -30,6 +30,7 @@ export const ChapterDescriptionForm = ({
   const { tokens } = useTheme();
   const router = useRouter();
   const [isEditing, setIsEditing] = React.useState(false);
+  const [isChange, setIsChange] = React.useState(false);
 
   const toggleEdit = () => setIsEditing((current) => !current);
 
@@ -99,6 +100,7 @@ export const ChapterDescriptionForm = ({
                   shouldValidate: true,
                   shouldTouch: true,
                 });
+                setIsChange(value !== initialData.description);
               }}
             />
           </Flex>
@@ -107,7 +109,7 @@ export const ChapterDescriptionForm = ({
               type="submit"
               variation="primary"
               size="small"
-              isDisabled={!isValid}
+              isDisabled={!isValid || !isChange}
               isLoading={isSubmitting}
               width={85}
               height={35}
